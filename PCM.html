@@ -1,0 +1,694 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PCM</title>
+    
+  <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/sphinx-book-theme.40e2e510f6b7d1648584402491bb10fe.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.3da636dd464baa7582d2.js">
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "wangxuuu/AdapLS_MINE");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d31b09fe5c1d09cb49b26a786de4a05d.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe,.cell"
+        const thebe_selector_input = "pre,.cell_input div.highlight"
+        const thebe_selector_output = ".output,.cell_output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="InfoNCE" href="infonce.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="README.html">
+   Demo
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="adaptive_LS_PCM.html">
+   Adaptive Label Smoothing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="infonce.html">
+   InfoNCE
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   PCM
+  </a>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/PCM.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+        <!-- Source interaction buttons -->
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        
+        <a class="jupyterhub-button" href="https://ltjh.cs.cityu.edu.hk/hub/user-redirect/git-pull?repo=https://github.com/wangxuuu/AdapLS_MINE&urlpath=tree/AdapLS_MINE/PCM.ipynb&branch=main"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch JupyterHub" data-toggle="tooltip"
+                data-placement="left"><img class="jupyterhub-button-logo"
+                    src="_static/images/logo_jupyterhub.svg"
+                    alt="Interact on JupyterHub">JupyterHub</button></a>
+        
+        
+        <a class="colab-button" href="https://colab.research.google.com/github/wangxuuu/AdapLS_MINE/blob/main/PCM.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
+                title="Launch Colab" data-toggle="tooltip" data-placement="left"><img class="colab-button-logo"
+                    src="_static/images/logo_colab.png"
+                    alt="Interact on Colab">Colab</button></a>
+        
+        <button type="button" class="btn btn-secondary topbarbtn"
+            onclick="initThebeSBT()" title="Launch Thebe" data-toggle="tooltip" data-placement="left"><i
+                class="fas fa-play"></i><span style="margin-left: .4em;">Live Code</span></button>
+        
+    </div>
+</div>
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="pcm">
+<h1>PCM<a class="headerlink" href="#pcm" title="Permalink to this headline">¶</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Discrimeter MI estimator (MIT)</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">Variable</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">data.mix_gaussian</span> <span class="kn">import</span> <span class="n">MixedGaussian</span>
+<span class="kn">from</span> <span class="nn">data.gaussian</span> <span class="kn">import</span> <span class="n">Gaussian</span>
+<span class="kn">from</span> <span class="nn">model.utils</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">cuda</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="kc">False</span>
+<span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span>
+<span class="n">LongTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">LongTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--rho&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;coefficient of Gaussian&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clipping parameter&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--d&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;dimension of X &amp; Y&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--sample_size&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;sample size&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b1&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b2&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n_iters&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">40000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of epochs of training&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--batch_size&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;size of the batches&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--lr&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: learning rate&quot;</span><span class="p">)</span>
+<span class="c1"># parser.add_argument(&quot;--latent_dim&quot;, type=int, default=1, help=&quot;dimensionality of the latent space&quot;)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--hidden_dim&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Hidden dimension&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--alpha&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;RMSprop: smoothing constant &quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ma_rate&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;move average rate&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ma_ef&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;move average ef&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--confidence&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;smooth parameter&quot;</span><span class="p">)</span>
+
+<span class="c1"># opt = parser.parse_args()</span>
+<span class="n">opt</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># construct the data</span>
+<span class="n">rep</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">density</span> <span class="o">=</span> <span class="s1">&#39;Gaussian&#39;</span>
+<span class="c1"># use GPU if available</span>
+<span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+    <span class="c1"># np.random.seed(seed)</span>
+    <span class="c1"># # initialize random seed</span>
+    <span class="c1"># torch.manual_seed(seed)</span>
+    <span class="n">mu1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mu2</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+    <span class="c1"># print(&#39;start generating&#39;)</span>
+    <span class="k">if</span> <span class="n">distribution</span><span class="o">==</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">:</span>
+        <span class="n">mg</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mg</span> <span class="o">=</span> <span class="n">MixedGaussian</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">mean1</span><span class="o">=</span><span class="n">mu1</span><span class="p">,</span> <span class="n">mean2</span><span class="o">=</span><span class="n">mu2</span><span class="p">,</span><span class="n">rho1</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span><span class="n">rho2</span><span class="o">=-</span><span class="n">rho</span><span class="p">)</span>
+    <span class="c1"># print(&#39;end generate&#39;)</span>
+    <span class="n">mi</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">ground_truth</span> <span class="o">*</span> <span class="n">opt</span><span class="o">.</span><span class="n">d</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Y</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">XY</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">XY</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">mi</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Net</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="c1"># Inner class that defines the neural network architecture</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.02</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+        <span class="c1"># output = self.fc3(output)</span>
+        <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span>
+
+<span class="c1"># loss</span>
+<span class="n">categorical_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">adversarial_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()</span>
+<span class="n">bcelogit_loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">cuda</span><span class="p">:</span>
+    <span class="n">discriminator</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="n">adversarial_loss</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<span class="c1"># Optimizers Adam</span>
+<span class="n">optimizer_D</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">discriminator</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">b1</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">b2</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">_resample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="c1"># Resample the given data sample.</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+        <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
+    <span class="n">batch</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">batch</span>
+
+<span class="k">def</span> <span class="nf">smooth_ce_loss</span><span class="p">(</span><span class="n">pre_label</span><span class="p">,</span> <span class="n">true_label</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">):</span>
+    <span class="n">new_labels</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">smoothing</span><span class="p">)</span> <span class="o">*</span> <span class="n">true_label</span> <span class="o">+</span> <span class="n">smoothing</span> <span class="o">/</span> <span class="n">num_classes</span>
+    <span class="k">return</span> <span class="n">adversarial_loss</span><span class="p">(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">new_labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># XY, X, Y, Ground_truth = generate_data(distribution=density, rho=opt.rho)</span>
+<span class="c1"># mi_list = []</span>
+<span class="c1"># acc_list = []</span>
+<span class="c1"># for i in range(opt.n_iters):</span>
+<span class="c1">#     data_joint = _resample(XY, batch_size=opt.batch_size)</span>
+<span class="c1">#     train_x = data_joint[:,0:opt.d]</span>
+<span class="c1">#     train_y = data_joint[:,opt.d:]</span>
+<span class="c1">#     x_tiled = torch.stack([train_x] * opt.batch_size, dim=0)</span>
+<span class="c1">#     y_tiled = torch.stack([train_y] * opt.batch_size, dim=1)</span>
+<span class="c1">#     # xy is [batch_size * batch_size, x_dim + y_dim]</span>
+<span class="c1">#     xy_pairs = torch.reshape(torch.cat((x_tiled, y_tiled), dim=2), [</span>
+<span class="c1">#                                 opt.batch_size * opt.batch_size, -1])</span>
+<span class="c1">#     pred_label = discriminator(xy_pairs)</span>
+
+<span class="c1">#     labels = [0.]*(xy_pairs.shape[0])</span>
+<span class="c1">#     labels[::(opt.batch_size+1)] = [1.]*opt.batch_size</span>
+<span class="c1">#     labels = torch.tensor(labels).type_as(pred_label)</span>
+<span class="c1">#     labels = labels.view(-1,1)</span>
+    
+<span class="c1">#     acc_list.append((torch.tensor([1 if x&gt;0.5 else 0 for x in pred_label]) == labels.flatten()).sum().float()/labels.shape[0])</span>
+<span class="c1">#     optimizer_D.zero_grad()</span>
+<span class="c1">#     loss = adversarial_loss(pred_label, labels)</span>
+<span class="c1">#     loss.backward()</span>
+<span class="c1">#     # nn.utils.clip_grad_norm_(discriminator.parameters(), 1)</span>
+<span class="c1">#     optimizer_D.step()</span>
+<span class="c1">#     with torch.no_grad():</span>
+<span class="c1">#         mi_est = mi_estimate(discriminator, XY, X, Y, opt.gamma, opt.batch_size-1)</span>
+<span class="c1">#         # mi_est = mi_estimate_KL(discriminator, data_joint, data_margin, opt.gamma)</span>
+<span class="c1">#     mi_list.append(mi_est)</span>
+<span class="c1">#     if i%500==0:</span>
+<span class="c1">#         print(&quot;Iternation: %d, loss: %f, mi_est: %f&quot;%(i, loss.item(), mi_est))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Ground_truth</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">)</span>
+<span class="n">mi_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">acc_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">n_iters</span><span class="p">):</span>
+    <span class="n">data_joint</span> <span class="o">=</span> <span class="n">_resample</span><span class="p">(</span><span class="n">XY</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">X_ref</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">Y_ref</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">data_margin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">X_ref</span><span class="p">,</span> <span class="n">Y_ref</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">Tensor</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">fake</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">Tensor</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">data_joint</span><span class="p">,</span> <span class="n">data_margin</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">valid</span><span class="p">,</span> <span class="n">fake</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">pred_label</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">data_margin</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">data_joint</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">acc_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span> <span class="k">if</span> <span class="n">x</span><span class="o">&gt;</span><span class="mf">0.5</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pred_label</span><span class="p">])</span> <span class="o">==</span> <span class="n">labels</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">optimizer_D</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="c1"># PCM loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">adversarial_loss</span><span class="p">(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="c1"># Label smoothing loss</span>
+    <span class="c1"># loss = smooth_ce_loss(pred_label, labels, opt.confidence, 2)</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer_D</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">mi_est</span> <span class="o">=</span> <span class="n">mi_estimate</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">XY</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">mi_est</span><span class="p">):</span>
+            <span class="n">mi_est</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mi_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c1"># mi_est = mi_estimate_KL(discriminator, data_joint, data_margin, opt.gamma)</span>
+        <span class="n">mi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi_est</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0:
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iternation: </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2">, mi_est: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">mi_est</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.693082, mi_est: 0.000148
+Iternation: 500, loss: 0.692399, mi_est: 0.002072
+Iternation: 1000, loss: 0.612301, mi_est: 0.169932
+Iternation: 1500, loss: 0.275360, mi_est: 1.281887
+Iternation: 2000, loss: 0.134634, mi_est: 2.314244
+Iternation: 2500, loss: 0.105807, mi_est: 2.813247
+Iternation: 3000, loss: 0.119355, mi_est: 3.367665
+Iternation: 3500, loss: 0.056974, mi_est: 3.876153
+Iternation: 4000, loss: 0.057302, mi_est: 4.065181
+Iternation: 4500, loss: 0.037920, mi_est: 4.411432
+Iternation: 5000, loss: 0.049970, mi_est: 4.405241
+Iternation: 5500, loss: 0.050616, mi_est: 4.746511
+Iternation: 6000, loss: 0.035372, mi_est: 4.691652
+Iternation: 6500, loss: 0.017362, mi_est: 5.154772
+Iternation: 7000, loss: 0.045504, mi_est: 4.959334
+Iternation: 7500, loss: 0.051600, mi_est: 5.285920
+Iternation: 8000, loss: 0.020403, mi_est: 5.630456
+Iternation: 8500, loss: 0.017227, mi_est: 5.892772
+Iternation: 9000, loss: 0.017062, mi_est: 5.725641
+Iternation: 9500, loss: 0.009736, mi_est: 5.704995
+Iternation: 10000, loss: 0.016056, mi_est: 6.100080
+Iternation: 10500, loss: 0.035593, mi_est: 6.049239
+Iternation: 11000, loss: 0.019759, mi_est: 6.204098
+Iternation: 11500, loss: 0.015864, mi_est: 6.206269
+Iternation: 12000, loss: 0.014936, mi_est: 6.137826
+Iternation: 12500, loss: 0.007122, mi_est: 6.074224
+Iternation: 13000, loss: 0.006710, mi_est: 6.446371
+Iternation: 13500, loss: 0.032771, mi_est: 6.124407
+Iternation: 14000, loss: 0.003011, mi_est: 6.936546
+Iternation: 14500, loss: 0.014809, mi_est: 6.301764
+Iternation: 15000, loss: 0.021748, mi_est: 6.547460
+Iternation: 15500, loss: 0.011671, mi_est: 6.524352
+Iternation: 16000, loss: 0.006535, mi_est: 6.912330
+Iternation: 16500, loss: 0.006041, mi_est: 6.883115
+Iternation: 17000, loss: 0.051953, mi_est: 6.573134
+Iternation: 17500, loss: 0.010719, mi_est: 6.275472
+Iternation: 18000, loss: 0.006409, mi_est: 6.828193
+Iternation: 18500, loss: 0.016974, mi_est: 6.515955
+Iternation: 19000, loss: 0.011272, mi_est: 6.809452
+Iternation: 19500, loss: 0.097709, mi_est: 5.968369
+Iternation: 20000, loss: 0.056988, mi_est: 6.329638
+Iternation: 20500, loss: 0.005348, mi_est: 6.594182
+Iternation: 21000, loss: 0.006547, mi_est: 6.485223
+Iternation: 21500, loss: 0.009647, mi_est: 6.618744
+Iternation: 22000, loss: 0.028278, mi_est: 6.739683
+Iternation: 22500, loss: 0.054447, mi_est: 6.284897
+Iternation: 23000, loss: 0.013163, mi_est: 7.001101
+Iternation: 23500, loss: 0.005509, mi_est: 6.804899
+Iternation: 24000, loss: 0.006301, mi_est: 6.966526
+Iternation: 24500, loss: 0.004174, mi_est: 7.315685
+Iternation: 25000, loss: 0.027327, mi_est: 6.563746
+Iternation: 25500, loss: 0.032112, mi_est: 7.105114
+Iternation: 26000, loss: 0.051844, mi_est: 6.159942
+Iternation: 26500, loss: 0.003064, mi_est: 7.331146
+Iternation: 27000, loss: 0.004050, mi_est: 6.888069
+Iternation: 27500, loss: 0.009651, mi_est: 6.768780
+Iternation: 28000, loss: 0.003191, mi_est: 7.239267
+Iternation: 28500, loss: 0.005950, mi_est: 6.607604
+Iternation: 29000, loss: 0.007802, mi_est: 6.514677
+Iternation: 29500, loss: 0.038715, mi_est: 6.882015
+Iternation: 30000, loss: 0.007317, mi_est: 6.547231
+Iternation: 30500, loss: 0.003816, mi_est: 6.619224
+Iternation: 31000, loss: 0.050757, mi_est: 6.978207
+Iternation: 31500, loss: 0.006878, mi_est: 6.571222
+Iternation: 32000, loss: 0.005476, mi_est: 6.328119
+Iternation: 32500, loss: 0.007280, mi_est: 6.760098
+Iternation: 33000, loss: 0.004481, mi_est: 6.842766
+Iternation: 33500, loss: 0.003865, mi_est: 7.000284
+Iternation: 34000, loss: 0.004145, mi_est: 6.946411
+Iternation: 34500, loss: 0.008932, mi_est: 6.290199
+Iternation: 35000, loss: 0.007271, mi_est: 6.920841
+Iternation: 35500, loss: 0.007696, mi_est: 6.805411
+Iternation: 36000, loss: 0.005934, mi_est: 6.891289
+Iternation: 36500, loss: 0.003915, mi_est: 6.847476
+Iternation: 37000, loss: 0.003352, mi_est: 6.976363
+Iternation: 37500, loss: 0.002525, mi_est: 7.321614
+Iternation: 38000, loss: 0.059520, mi_est: 6.927707
+Iternation: 38500, loss: 0.003355, mi_est: 7.064632
+Iternation: 39000, loss: 0.004447, mi_est: 7.216806
+Iternation: 39500, loss: 0.003951, mi_est: 7.088460
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ma_rate</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">mi_copy</span> <span class="o">=</span> <span class="n">mi_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">mi_list</span><span class="p">)):</span>
+    <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ma_rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ma_rate</span> <span class="o">*</span> <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+<span class="n">acc_copy</span> <span class="o">=</span> <span class="n">acc_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">acc_copy</span><span class="p">)):</span>
+    <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ma_rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ma_rate</span> <span class="o">*</span> <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;MI estimate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">Ground_truth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;ground truth&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mi_copy</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">&gt;.</span><span class="mi">8</span><span class="o">*</span><span class="n">Ground_truth</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;80</span><span class="si">% r</span><span class="s1">eached&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+        <span class="k">break</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of iterations&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;MI estimation&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_d</span><span class="si">{}</span><span class="s1">_clip</span><span class="si">{}</span><span class="s1">_rho</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">density</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="c1"># plt.savefig(&#39;./results/DIEM/{}_d{}_clip{}_rho{}.pdf&#39;.format(density, opt.d, opt.gamma, opt.rho))</span>
+<span class="c1"># plt.savefig(&#39;./results/DIEM/NoClip{}_d{}_smooth{}_rho{}.pdf&#39;.format(density, opt.d, opt.confidence, opt.rho))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb7e80a1a90&gt;
+</pre></div>
+</div>
+<img alt="_images/PCM_9_1.svg" src="_images/PCM_9_1.svg" /></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># # plot the density ratio (discrimeter)</span>
+<span class="c1"># N = 100</span>
+<span class="c1"># arr = np.arange(N)</span>
+<span class="c1"># np.random.shuffle(arr)</span>
+<span class="c1"># x = np.linspace(-2,2,N)  </span>
+<span class="c1"># x1, x2 = np.meshgrid(x,x)</span>
+<span class="c1"># y = np.zeros((N,N))</span>
+<span class="c1"># for i in range(N):</span>
+<span class="c1">#     for j in range(N):</span>
+<span class="c1">#         test_x = np.array([x1[i,j],x2[i,j]]).T</span>
+<span class="c1">#         y[i,j] = discriminator(torch.Tensor(test_x))</span>
+<span class="c1">#         z[i,j] = np.log(alpha*y[i,j]/(1-y[i,j]))</span>
+<span class="c1"># # test_x = np.array([x,x[arr]]).T</span>
+<span class="c1"># # y = discriminator(torch.Tensor(test_x))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import matplotlib.pyplot as plt</span>
+<span class="c1"># from mpl_toolkits.mplot3d import Axes3D</span>
+<span class="c1"># fig = plt.figure(figsize=(8, 5))</span>
+<span class="c1"># ax = plt.axes(projection=&#39;3d&#39;, elev=50, azim=-50)</span>
+<span class="c1"># ax.plot_surface(x1, x2, z, rstride=1, cstride=1, </span>
+<span class="c1">#                 edgecolor=&#39;none&#39;, alpha=.8, cmap=plt.get_cmap(&#39;rainbow&#39;))</span>
+<span class="c1"># # ax.plot_surface(x1, x2, y3, rstride=1, cstride=1, </span>
+<span class="c1"># #                 edgecolor=&#39;none&#39;, alpha=.8, cmap=plt.get_cmap(&#39;rainbow&#39;))</span>
+<span class="c1"># ax.set_xlabel(&#39;$x1$&#39;)</span>
+<span class="c1"># ax.set_ylabel(&#39;$x2$&#39;)</span>
+<span class="c1"># ax.set_zlabel(&#39;$z$&#39;)</span>
+<span class="c1"># # plt.savefig(&#39;./surface3d.pdf&#39;)</span>
+<span class="c1"># plt.show()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import matplotlib.pyplot as plt</span>
+<span class="c1"># from mpl_toolkits.mplot3d import Axes3D</span>
+<span class="c1"># fig = plt.figure(figsize=(8, 5))</span>
+<span class="c1"># ax = plt.axes(projection=&#39;3d&#39;, elev=50, azim=-50)</span>
+<span class="c1"># ax.plot_surface(x1, x2, y, rstride=1, cstride=1, </span>
+<span class="c1">#                 edgecolor=&#39;none&#39;, alpha=.8, cmap=plt.get_cmap(&#39;rainbow&#39;))</span>
+<span class="c1"># # ax.plot_surface(x1, x2, y3, rstride=1, cstride=1, </span>
+<span class="c1"># #                 edgecolor=&#39;none&#39;, alpha=.8, cmap=plt.get_cmap(&#39;rainbow&#39;))</span>
+<span class="c1"># ax.set_xlabel(&#39;$x1$&#39;)</span>
+<span class="c1"># ax.set_ylabel(&#39;$x2$&#39;)</span>
+<span class="c1"># ax.set_zlabel(&#39;$z$&#39;)</span>
+<span class="c1"># # plt.savefig(&#39;./surface3d.pdf&#39;)</span>
+<span class="c1"># plt.show()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "wangxuuu/AdapLS_MINE",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="infonce.html" title="previous page">InfoNCE</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Xu Wang, Ali Al-Bashabsheh, Chao Zhao, Chung Chan<br/>
+        
+            &copy; Copyright 2021.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="_static/js/index.3da636dd464baa7582d2.js"></script>
+
+
+    
+  </body>
+</html>
