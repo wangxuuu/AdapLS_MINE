@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Demo</title>
+    <title>Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation</title>
     
   <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
 
@@ -119,7 +119,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <ul class="nav sidenav_l1">
  <li class="toctree-l1 current active">
   <a class="reference internal" href="#">
-   Demo
+   Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation
   </a>
  </li>
 </ul>
@@ -204,6 +204,25 @@ commentsRunWhenDOMLoaded(addUtterances);
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
         
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#background">
+   Background
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#experiments">
+   Experiments
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -211,9 +230,23 @@ commentsRunWhenDOMLoaded(addUtterances);
         
               <div>
                 
-  <div class="section" id="demo">
-<h1>Demo<a class="headerlink" href="#demo" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="adaptive-label-smoothing-for-classifier-based-mutual-information-neural-estimation">
+<h1>Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation<a class="headerlink" href="#adaptive-label-smoothing-for-classifier-based-mutual-information-neural-estimation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="background">
+<h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<p>Estimating mutual information (MI) by neural networks has achieved significant practical success, especially in representation learning. Recent results further reduced the variance in the neural estimation by training a probabilistic classifier. However, the trained classifier tends to be overly confident about some of its predictions, which results in an overestimated MI that fails to capture the desired representation.</p>
+<p>To soften the classifier, we propose a novel scheme that smooths the label adaptively according to how extreme the probability estimates are. The resulting MI estimate is unbiased under only mild assumptions on the model.</p>
+</div>
+<div class="section" id="experiments">
+<h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
+<p>The repository contains the implementation of the proposed adaptive label smoothing scheme. Experimental results on MNIST and CIFAR10 datasets confirmed that method yields better representation and achieves higher classification test accuracy among existing approaches in self-supervised representation learning. The results are reproducible using the jupyter notebooks in this repository:</p>
+<ul class="simple">
+<li><p>adaptive_LS_PCM.ipynb: The proposed adaptive label smooth scheme.</p></li>
+<li><p>PCM.ipynb: The probabilisitic classifier method.</p></li>
+<li><p>InfoNCE.ipynb: The noise contrastive method.</p></li>
+</ul>
 <div class="toctree-wrapper compound">
+</div>
 </div>
 </div>
 
