@@ -1,5 +1,5 @@
 #!/bin/bash
-for cmd in "jupyter-book build ." "ghp-import -n -p -f _build/html"
+for cmd in "rm -rf _build" "jupyter-book build ." "perl -pi -e 's{https://mybinder.org/v2/gh/wangxuuu/AdapLS_MINE/main\?urlpath=tree/(.*\.ipynb)}{https://mybinder.org/v2/gh/ccha23/binder/master?urlpath=git-pull?repo%3Dhttps%3A%2F%2Fgithub.com%2Fwangxuuu%2FAdapLS_MINE%26urlpath%3Dtree%2FAdapLS_MINE%2F\$1%26branch%3Dmain}g' _build/html/*.html" "ghp-import -n -p -f _build/html"
 do
     read -r -p "${cmd}?[Y/n] " input
 
