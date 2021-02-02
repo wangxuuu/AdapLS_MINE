@@ -363,15 +363,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="simple">
 <li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-d14be2e5-53b5-4281-b35b-ec3f685093d4">
-<span class="eqno">(1)<a class="headerlink" href="#equation-d14be2e5-53b5-4281-b35b-ec3f685093d4" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5b47975b-3995-49e8-9090-300fa0f933f3">
+<span class="eqno">(1)<a class="headerlink" href="#equation-5b47975b-3995-49e8-9090-300fa0f933f3" title="Permalink to this equation">¶</a></span>\[\begin{align}
 p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
 <ul class="simple">
 <li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-e693954d-3e18-4ff6-9952-1d6d3ff5049d">
-<span class="eqno">(2)<a class="headerlink" href="#equation-e693954d-3e18-4ff6-9952-1d6d3ff5049d" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-f215b42a-949e-4fa2-a6e3-03f59d007d44">
+<span class="eqno">(2)<a class="headerlink" href="#equation-f215b42a-949e-4fa2-a6e3-03f59d007d44" title="Permalink to this equation">¶</a></span>\[\begin{align} 
 p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
@@ -451,9 +451,9 @@ p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begi
 </div>
 </div>
 </div>
-<p>The function <code class="docutils literal notranslate"><span class="pre">infonce_loss</span></code> below returns the empirical estimate of the following infoNCE lower bound on the mutual information <span class="math notranslate nohighlight">\(I(X\wedge Y)\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-45f5d716-153b-40e5-a2cf-5b49b17ccaa3">
-<span class="eqno">(3)<a class="headerlink" href="#equation-45f5d716-153b-40e5-a2cf-5b49b17ccaa3" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<p>The function <code class="docutils literal notranslate"><span class="pre">infonce_bound</span></code> below returns the empirical estimate of the following infoNCE lower bound on the mutual information <span class="math notranslate nohighlight">\(I(X\wedge Y)\)</span>:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-8489a54f-3e03-452b-8338-b6a0cf3ff6bf">
+<span class="eqno">(3)<a class="headerlink" href="#equation-8489a54f-3e03-452b-8338-b6a0cf3ff6bf" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, Y')} \right| X \right]} \right] \leq I(X\wedge Y) 
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(f: \mathcal{X}\times \mathcal{Y}\to \mathbb{R}\)</span> is a function to be implemented by a neural network, and <span class="math notranslate nohighlight">\(p_{Y'|X,Y}(y'|x,y)=p_{Y}(y)\)</span>, i.e., <span class="math notranslate nohighlight">\(Y'\)</span> is identically distributed as <span class="math notranslate nohighlight">\(Y\)</span> and independent of <span class="math notranslate nohighlight">\((X,Y)\)</span>.</p>
@@ -492,13 +492,13 @@ I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, 
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>Since maximizing the infoNCE bound over <span class="math notranslate nohighlight">\(f\)</span> attains the mutual information</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8d12b88a-b85f-422e-84dd-db74462ec3ab">
-<span class="eqno">(4)<a class="headerlink" href="#equation-8d12b88a-b85f-422e-84dd-db74462ec3ab" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-09d1a150-a6bb-42df-9cfb-0a39f9b4f196">
+<span class="eqno">(4)<a class="headerlink" href="#equation-09d1a150-a6bb-42df-9cfb-0a39f9b4f196" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X\wedge Y) = \sup_{f} I_{\text{infoNCE}}(f),
 \end{align}\]</div>
 <p>we train the neural network to minimize the loss <span class="math notranslate nohighlight">\(-I_{\text{infoNCE}}(f)\)</span>. The optimal solution <span class="math notranslate nohighlight">\(f\)</span> satisfies</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d1d81afc-228f-4e84-b074-5031adb6257b">
-<span class="eqno">(5)<a class="headerlink" href="#equation-d1d81afc-228f-4e84-b074-5031adb6257b" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-817b6830-d882-4e25-bf09-b971de63b11d">
+<span class="eqno">(5)<a class="headerlink" href="#equation-817b6830-d882-4e25-bf09-b971de63b11d" title="Permalink to this equation">¶</a></span>\[\begin{align}
 f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y \in \mathcal{Y}
 \end{align}\]</div>
 <p>for any constant <span class="math notranslate nohighlight">\(c\)</span>.</p>
@@ -513,97 +513,13 @@ f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y 
     <span class="n">train_y</span> <span class="o">=</span> <span class="n">data_joint</span><span class="p">[:,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">:]</span>
 
     <span class="n">optimizer_D</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span> <span class="n">infonce_bound</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span> <span class="c1"># negative infonce_loss as the loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span> <span class="n">infonce_bound</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span> <span class="c1"># negative infonce_bound as the loss</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 
     <span class="n">optimizer_D</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
     <span class="n">mi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0:
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iternation: </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: -0.000027
-Iternation: 500, loss: 2.787301
-Iternation: 1000, loss: 4.095554
-Iternation: 1500, loss: 4.398554
-Iternation: 2000, loss: 4.446631
-Iternation: 2500, loss: 4.493898
-Iternation: 3000, loss: 4.455656
-Iternation: 3500, loss: 4.500001
-Iternation: 4000, loss: 4.477431
-Iternation: 4500, loss: 4.501705
-Iternation: 5000, loss: 4.509816
-Iternation: 5500, loss: 4.508554
-Iternation: 6000, loss: 4.544929
-Iternation: 6500, loss: 4.556558
-Iternation: 7000, loss: 4.514485
-Iternation: 7500, loss: 4.473107
-Iternation: 8000, loss: 4.553349
-Iternation: 8500, loss: 4.565469
-Iternation: 9000, loss: 4.550261
-Iternation: 9500, loss: 4.483590
-Iternation: 10000, loss: 4.556413
-Iternation: 10500, loss: 4.487988
-Iternation: 11000, loss: 4.564132
-Iternation: 11500, loss: 4.537271
-Iternation: 12000, loss: 4.521422
-Iternation: 12500, loss: 4.559649
-Iternation: 13000, loss: 4.563319
-Iternation: 13500, loss: 4.566533
-Iternation: 14000, loss: 4.558338
-Iternation: 14500, loss: 4.526571
-Iternation: 15000, loss: 4.488736
-Iternation: 15500, loss: 4.568943
-Iternation: 16000, loss: 4.557989
-Iternation: 16500, loss: 4.588388
-Iternation: 17000, loss: 4.541717
-Iternation: 17500, loss: 4.583024
-Iternation: 18000, loss: 4.468713
-Iternation: 18500, loss: 4.544075
-Iternation: 19000, loss: 4.474595
-Iternation: 19500, loss: 4.551040
-Iternation: 20000, loss: 4.561127
-Iternation: 20500, loss: 4.525129
-Iternation: 21000, loss: 4.559439
-Iternation: 21500, loss: 4.503796
-Iternation: 22000, loss: 4.581782
-Iternation: 22500, loss: 4.575066
-Iternation: 23000, loss: 4.574146
-Iternation: 23500, loss: 4.564165
-Iternation: 24000, loss: 4.590734
-Iternation: 24500, loss: 4.583956
-Iternation: 25000, loss: 4.553949
-Iternation: 25500, loss: 4.585326
-Iternation: 26000, loss: 4.580797
-Iternation: 26500, loss: 4.540415
-Iternation: 27000, loss: 4.592276
-Iternation: 27500, loss: 4.583111
-Iternation: 28000, loss: 4.600468
-Iternation: 28500, loss: 4.569783
-Iternation: 29000, loss: 4.571724
-Iternation: 29500, loss: 4.600033
-Iternation: 30000, loss: 4.582647
-Iternation: 30500, loss: 4.564939
-Iternation: 31000, loss: 4.592005
-Iternation: 31500, loss: 4.570681
-Iternation: 32000, loss: 4.547451
-Iternation: 32500, loss: 4.571764
-Iternation: 33000, loss: 4.596559
-Iternation: 33500, loss: 4.587807
-Iternation: 34000, loss: 4.520570
-Iternation: 34500, loss: 4.572693
-Iternation: 35000, loss: 4.583790
-Iternation: 35500, loss: 4.579411
-Iternation: 36000, loss: 4.553925
-Iternation: 36500, loss: 4.563698
-Iternation: 37000, loss: 4.581118
-Iternation: 37500, loss: 4.573557
-Iternation: 38000, loss: 4.583523
-Iternation: 38500, loss: 4.558619
-Iternation: 39000, loss: 4.594528
-Iternation: 39500, loss: 4.582762
 </pre></div>
 </div>
 </div>
