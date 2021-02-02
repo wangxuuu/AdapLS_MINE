@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>InfoNCE</title>
+    <title>Estimating MI by noise contrastive method (InfoNCE)</title>
     
   <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
 
@@ -81,6 +81,8 @@ commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/sphinx-book-theme.d31b09fe5c1d09cb49b26a786de4a05d.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe,.cell"
@@ -120,7 +122,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <ul class="nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="README.html">
-   Demo
+   Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation
   </a>
  </li>
 </ul>
@@ -132,7 +134,7 @@ commentsRunWhenDOMLoaded(addUtterances);
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   InfoNCE
+   Estimating MI by noise contrastive method (InfoNCE)
   </a>
  </li>
  <li class="toctree-l1">
@@ -205,6 +207,12 @@ commentsRunWhenDOMLoaded(addUtterances);
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
+        <a class="binder-button" href="https://mybinder.org/v2/gh/ccha23/binder/master?urlpath=git-pull?repo%3Dhttps%3A%2F%2Fmybinder.org%2Fv2%2Fgh%2Fwangxuuu%2FAdapLS_MINE%2Fmain%3Furlpath%3Dtree%2Finfonce.ipynb%26branch%3Dmain"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
         
         <a class="jupyterhub-button" href="https://ltjh.cs.cityu.edu.hk/hub/user-redirect/git-pull?repo=https://github.com/wangxuuu/AdapLS_MINE&urlpath=tree/AdapLS_MINE/infonce.ipynb&branch=main"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch JupyterHub" data-toggle="tooltip"
@@ -230,6 +238,35 @@ commentsRunWhenDOMLoaded(addUtterances);
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
         
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#import-packages-set-gpu-and-random-seeds">
+   Import packages, set GPU and random seeds
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#define-functions-and-neural-networks-nn">
+   Define functions and neural networks (NN)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#generate-samples-and-train-the-neural-network">
+   Generate samples and train the neural network.
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mi-estimation-and-plottings">
+   MI estimation and plottings
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -237,12 +274,14 @@ commentsRunWhenDOMLoaded(addUtterances);
         
               <div>
                 
-  <div class="section" id="infonce">
-<h1>InfoNCE<a class="headerlink" href="#infonce" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="estimating-mi-by-noise-contrastive-method-infonce">
+<h1>Estimating MI by noise contrastive method (InfoNCE)<a class="headerlink" href="#estimating-mi-by-noise-contrastive-method-infonce" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="import-packages-set-gpu-and-random-seeds">
+<h2>Import packages, set GPU and random seeds<a class="headerlink" href="#import-packages-set-gpu-and-random-seeds" title="Permalink to this headline">¶</a></h2>
+<p>import necessary packages</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Discrimeter MI estimator (MIT)</span>
-<span class="kn">import</span> <span class="nn">torch</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
@@ -255,17 +294,43 @@ commentsRunWhenDOMLoaded(addUtterances);
 <span class="kn">from</span> <span class="nn">data.mix_gaussian</span> <span class="kn">import</span> <span class="n">MixedGaussian</span>
 <span class="kn">from</span> <span class="nn">data.gaussian</span> <span class="kn">import</span> <span class="n">Gaussian</span>
 <span class="kn">from</span> <span class="nn">model.utils</span> <span class="kn">import</span> <span class="o">*</span>
-
-<span class="n">cuda</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Use GPU if GPU is available.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cuda</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="kc">False</span>
 <span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span>
 <span class="n">LongTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">LongTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">FloatTensor</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Set random seed for reproducibility.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">SEED</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Arguments for running</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># arguments</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--rho&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;coefficient of Gaussian&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clip the ratio&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--d&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;dimension of X &amp; Y&quot;</span><span class="p">)</span>
@@ -290,44 +355,59 @@ commentsRunWhenDOMLoaded(addUtterances);
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># construct the data</span>
-<span class="n">rep</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the kind of distribution to generate; Two choice here: &#39;Gaussian&#39; and &#39;MixedGaussian</span>
 <span class="n">density</span> <span class="o">=</span> <span class="s1">&#39;Gaussian&#39;</span>
-<span class="c1"># use GPU if available</span>
-<span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
-    <span class="c1"># np.random.seed(seed)</span>
-    <span class="c1"># # initialize random seed</span>
-    <span class="c1"># torch.manual_seed(seed)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="define-functions-and-neural-networks-nn">
+<h2>Define functions and neural networks (NN)<a class="headerlink" href="#define-functions-and-neural-networks-nn" title="Permalink to this headline">¶</a></h2>
+<p>Define the function <code class="docutils literal notranslate"><span class="pre">generate_data</span></code> for generating Gaussian or Mixed Gaussian distributions.</p>
+<ul class="simple">
+<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as
+$<span class="math notranslate nohighlight">\( p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) \)</span>$</p></li>
+<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as
+$<span class="math notranslate nohighlight">\( p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) \)</span>$</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+    <span class="c1"># rho is the covariance for generating distributions</span>
+    <span class="c1"># mu1 and mu2 are means for generating Mixed Gaussian distribution </span>
     <span class="n">mu1</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">mu2</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
-    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
-    <span class="c1"># print(&#39;start generating&#39;)</span>
+    <span class="c1"># mg is an object of Class Gaussian or MixedGaussian</span>
     <span class="k">if</span> <span class="n">distribution</span><span class="o">==</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">:</span>
         <span class="n">mg</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mg</span> <span class="o">=</span> <span class="n">MixedGaussian</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">mean1</span><span class="o">=</span><span class="n">mu1</span><span class="p">,</span> <span class="n">mean2</span><span class="o">=</span><span class="n">mu2</span><span class="p">,</span><span class="n">rho1</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span><span class="n">rho2</span><span class="o">=-</span><span class="n">rho</span><span class="p">)</span>
-    <span class="c1"># print(&#39;end generate&#39;)</span>
+        <span class="n">mg</span> <span class="o">=</span> <span class="n">MixedGaussian</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">mean1</span><span class="o">=</span><span class="n">mu1</span><span class="p">,</span> <span class="n">mean2</span><span class="o">=</span><span class="n">mu2</span><span class="p">,</span><span class="n">rho1</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho2</span><span class="o">=-</span><span class="n">rho</span><span class="p">)</span>
+
+    <span class="c1"># Calculate the ground truth MI between X and Y for (X, Y) from mg</span>
     <span class="n">mi</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">ground_truth</span> <span class="o">*</span> <span class="n">opt</span><span class="o">.</span><span class="n">d</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c1"># Create X, Y for storing generated samples</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+
+    <span class="c1"># Generate samples of random variable X,Y and XY</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">):</span>
+        <span class="c1"># In each iteration, mg.data will generate samples of two dimensions where one dimension for X and another for Y respectively </span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">data</span>
         <span class="n">X</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">Y</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">Y</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>        
     <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
     <span class="n">XY</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">XY</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">mi</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Define the neural network.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Net</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -347,41 +427,32 @@ commentsRunWhenDOMLoaded(addUtterances);
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
-        <span class="c1"># output = F.sigmoid(self.fc3(output))</span>
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        
         <span class="k">return</span> <span class="n">output</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Function <code class="docutils literal notranslate"><span class="pre">_resample</span></code> is for resampling the given data samples for training neural network.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span>
-
-<span class="c1"># loss</span>
-<span class="n">categorical_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
-<span class="n">adversarial_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()</span>
-<span class="n">bcelogit_loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>
-
-<span class="k">if</span> <span class="n">cuda</span><span class="p">:</span>
-    <span class="n">discriminator</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-    <span class="n">adversarial_loss</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-<span class="c1"># Optimizers Adam</span>
-<span class="n">optimizer_D</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">discriminator</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">b1</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">b2</span><span class="p">))</span>
-
-<span class="k">def</span> <span class="nf">_resample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_resample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="c1"># Resample the given data sample.</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
         <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
     <span class="n">batch</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">batch</span>
-
-<span class="k">def</span> <span class="nf">smooth_ce_loss</span><span class="p">(</span><span class="n">pre_label</span><span class="p">,</span> <span class="n">true_label</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">):</span>
-    <span class="n">new_labels</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">smoothing</span><span class="p">)</span> <span class="o">*</span> <span class="n">true_label</span> <span class="o">+</span> <span class="n">smoothing</span> <span class="o">/</span> <span class="n">num_classes</span>
-    <span class="k">return</span> <span class="n">adversarial_loss</span><span class="p">(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">new_labels</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">infonce_loss</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">x_samples</span><span class="p">,</span> <span class="n">y_samples</span><span class="p">):</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Function <code class="docutils literal notranslate"><span class="pre">infonce_loss</span></code> returns a lower bound of infoNCE loss:
+$<span class="math notranslate nohighlight">\(l_{infoNCE} ({\rm X}, {\rm Y})= \sup \limits_{f \in \mathcal{F}} \mathbb{E}\left[\log \frac{e^{f({\rm X}, {\rm Y})}}{\mathbb{E} \left[ e^{f({\rm X}, {\rm Y'})} | {\rm X} \right]} \right]\)</span>$
+where <code class="docutils literal notranslate"><span class="pre">f()</span></code> is implemented by a neural network.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">infonce_loss</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">x_samples</span><span class="p">,</span> <span class="n">y_samples</span><span class="p">):</span>
     <span class="n">sample_size</span> <span class="o">=</span> <span class="n">x_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">x_tile</span> <span class="o">=</span> <span class="n">x_samples</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">((</span><span class="n">sample_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">y_tile</span> <span class="o">=</span> <span class="n">y_samples</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
@@ -389,26 +460,45 @@ commentsRunWhenDOMLoaded(addUtterances);
     <span class="n">T0</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x_samples</span><span class="p">,</span><span class="n">y_samples</span><span class="p">],</span> <span class="n">dim</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">T1</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x_tile</span><span class="p">,</span> <span class="n">y_tile</span><span class="p">],</span> <span class="n">dim</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>  <span class="c1">#[sample_size, sample_size, 1]</span>
 
-    <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">T0</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">T1</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sample_size</span><span class="p">))</span> 
+    <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">T0</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="n">T1</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sample_size</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">lower_bound</span>
 </pre></div>
 </div>
 </div>
 </div>
+</div>
+<div class="section" id="generate-samples-and-train-the-neural-network">
+<h2>Generate samples and train the neural network.<a class="headerlink" href="#generate-samples-and-train-the-neural-network" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">bcelogit_loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>  <span class="c1"># bcelogit_loss</span>
+
+<span class="c1"># move NN model GPU if GPU is available</span>
+<span class="k">if</span> <span class="n">cuda</span><span class="p">:</span>
+    <span class="n">discriminator</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+
+<span class="c1"># Adam optimizer</span>
+<span class="n">optimizer_D</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">discriminator</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">b1</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">b2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Generate samples and train the neural network.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Ground_truth</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">)</span>
-<span class="n">mi_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">acc_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">mi_list</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># storing the infoNCE of each iteration</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">n_iters</span><span class="p">):</span>
     <span class="n">data_joint</span> <span class="o">=</span> <span class="n">_resample</span><span class="p">(</span><span class="n">XY</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
     <span class="n">train_x</span> <span class="o">=</span> <span class="n">data_joint</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">]</span>
     <span class="n">train_y</span> <span class="o">=</span> <span class="n">data_joint</span><span class="p">[:,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">:]</span>
     
     <span class="n">optimizer_D</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">infonce_loss</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">infonce_loss</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span> <span class="c1"># negative infonce_loss as the loss</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-    <span class="c1"># nn.utils.clip_grad_norm_(discriminator.parameters(), 1)</span>
+
     <span class="n">optimizer_D</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
     <span class="n">mi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0:
@@ -417,140 +507,105 @@ commentsRunWhenDOMLoaded(addUtterances);
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: -0.000021
-Iternation: 500, loss: 2.359598
-Iternation: 1000, loss: 4.023215
-Iternation: 1500, loss: 4.339508
-Iternation: 2000, loss: 4.407044
-Iternation: 2500, loss: 4.430843
-Iternation: 3000, loss: 4.509287
-Iternation: 3500, loss: 4.546439
-Iternation: 4000, loss: 4.524190
-Iternation: 4500, loss: 4.544006
-Iternation: 5000, loss: 4.549411
-Iternation: 5500, loss: 4.574734
-Iternation: 6000, loss: 4.553983
-Iternation: 6500, loss: 4.591371
-Iternation: 7000, loss: 4.590882
-Iternation: 7500, loss: 4.582485
-Iternation: 8000, loss: 4.588560
-Iternation: 8500, loss: 4.598606
-Iternation: 9000, loss: 4.597876
-Iternation: 9500, loss: 4.600904
-Iternation: 10000, loss: 4.598248
-Iternation: 10500, loss: 4.602193
-Iternation: 11000, loss: 4.600780
-Iternation: 11500, loss: 4.601977
-Iternation: 12000, loss: 4.604249
-Iternation: 12500, loss: 4.603873
-Iternation: 13000, loss: 4.604014
-Iternation: 13500, loss: 4.604632
-Iternation: 14000, loss: 4.604919
-Iternation: 14500, loss: 4.604755
-Iternation: 15000, loss: 4.604965
-Iternation: 15500, loss: 4.605061
-Iternation: 16000, loss: 4.605077
-Iternation: 16500, loss: 4.605108
-Iternation: 17000, loss: 4.604980
-Iternation: 17500, loss: 4.605083
-Iternation: 18000, loss: 4.605112
-Iternation: 18500, loss: 4.605125
-Iternation: 19000, loss: 4.605131
-Iternation: 19500, loss: 4.605154
-Iternation: 20000, loss: 4.605137
-Iternation: 20500, loss: 4.605160
-Iternation: 21000, loss: 4.605162
-Iternation: 21500, loss: 4.605160
-Iternation: 22000, loss: 4.605165
-Iternation: 22500, loss: 4.605164
-Iternation: 23000, loss: 4.605163
-Iternation: 23500, loss: 4.605165
-Iternation: 24000, loss: 4.605168
-Iternation: 24500, loss: 4.605168
-Iternation: 25000, loss: 4.605168
-Iternation: 25500, loss: 4.605170
-Iternation: 26000, loss: 4.605168
-Iternation: 26500, loss: 4.605170
-Iternation: 27000, loss: 4.605171
-Iternation: 27500, loss: 4.605171
-Iternation: 28000, loss: 4.605171
-Iternation: 28500, loss: 4.605179
-Iternation: 29000, loss: 4.605164
-Iternation: 29500, loss: 4.605164
-Iternation: 30000, loss: 4.605133
-Iternation: 30500, loss: 4.605164
-Iternation: 31000, loss: 4.605133
-Iternation: 31500, loss: 4.605164
-Iternation: 32000, loss: 4.605103
-Iternation: 32500, loss: 4.605194
-Iternation: 33000, loss: 4.605164
-Iternation: 33500, loss: 4.605164
-Iternation: 34000, loss: 4.605164
-Iternation: 34500, loss: 4.605164
-Iternation: 35000, loss: 4.605164
-Iternation: 35500, loss: 4.605164
-Iternation: 36000, loss: 4.605164
-Iternation: 36500, loss: 4.605164
-Iternation: 37000, loss: 4.605164
-Iternation: 37500, loss: 4.605103
-Iternation: 38000, loss: 4.605286
-Iternation: 38500, loss: 4.605225
-Iternation: 39000, loss: 4.605225
-Iternation: 39500, loss: 4.605225
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: -0.000027
+Iternation: 500, loss: 2.787301
+Iternation: 1000, loss: 4.095554
+Iternation: 1500, loss: 4.398554
+Iternation: 2000, loss: 4.446631
+Iternation: 2500, loss: 4.493898
+Iternation: 3000, loss: 4.455656
+Iternation: 3500, loss: 4.500001
+Iternation: 4000, loss: 4.477431
+Iternation: 4500, loss: 4.501705
+Iternation: 5000, loss: 4.509816
+Iternation: 5500, loss: 4.508554
+Iternation: 6000, loss: 4.544929
+Iternation: 6500, loss: 4.556558
+Iternation: 7000, loss: 4.514485
+Iternation: 7500, loss: 4.473107
+Iternation: 8000, loss: 4.553349
+Iternation: 8500, loss: 4.565469
+Iternation: 9000, loss: 4.550261
+Iternation: 9500, loss: 4.483590
+Iternation: 10000, loss: 4.556413
+Iternation: 10500, loss: 4.487988
+Iternation: 11000, loss: 4.564132
+Iternation: 11500, loss: 4.537271
+Iternation: 12000, loss: 4.521422
+Iternation: 12500, loss: 4.559649
+Iternation: 13000, loss: 4.563319
+Iternation: 13500, loss: 4.566533
+Iternation: 14000, loss: 4.558338
+Iternation: 14500, loss: 4.526571
+Iternation: 15000, loss: 4.488736
+Iternation: 15500, loss: 4.568943
+Iternation: 16000, loss: 4.557989
+Iternation: 16500, loss: 4.588388
+Iternation: 17000, loss: 4.541717
+Iternation: 17500, loss: 4.583024
+Iternation: 18000, loss: 4.468713
+Iternation: 18500, loss: 4.544075
+Iternation: 19000, loss: 4.474595
+Iternation: 19500, loss: 4.551040
+Iternation: 20000, loss: 4.561127
+Iternation: 20500, loss: 4.525129
+Iternation: 21000, loss: 4.559439
+Iternation: 21500, loss: 4.503796
+Iternation: 22000, loss: 4.581782
+Iternation: 22500, loss: 4.575066
+Iternation: 23000, loss: 4.574146
+Iternation: 23500, loss: 4.564165
+Iternation: 24000, loss: 4.590734
+Iternation: 24500, loss: 4.583956
+Iternation: 25000, loss: 4.553949
+Iternation: 25500, loss: 4.585326
+Iternation: 26000, loss: 4.580797
+Iternation: 26500, loss: 4.540415
+Iternation: 27000, loss: 4.592276
+Iternation: 27500, loss: 4.583111
+Iternation: 28000, loss: 4.600468
+Iternation: 28500, loss: 4.569783
+Iternation: 29000, loss: 4.571724
+Iternation: 29500, loss: 4.600033
+Iternation: 30000, loss: 4.582647
+Iternation: 30500, loss: 4.564939
+Iternation: 31000, loss: 4.592005
+Iternation: 31500, loss: 4.570681
+Iternation: 32000, loss: 4.547451
+Iternation: 32500, loss: 4.571764
+Iternation: 33000, loss: 4.596559
+Iternation: 33500, loss: 4.587807
+Iternation: 34000, loss: 4.520570
+Iternation: 34500, loss: 4.572693
+Iternation: 35000, loss: 4.583790
+Iternation: 35500, loss: 4.579411
+Iternation: 36000, loss: 4.553925
+Iternation: 36500, loss: 4.563698
+Iternation: 37000, loss: 4.581118
+Iternation: 37500, loss: 4.573557
+Iternation: 38000, loss: 4.583523
+Iternation: 38500, loss: 4.558619
+Iternation: 39000, loss: 4.594528
+Iternation: 39500, loss: 4.582762
 </pre></div>
 </div>
 </div>
 </div>
+</div>
+<div class="section" id="mi-estimation-and-plottings">
+<h2>MI estimation and plottings<a class="headerlink" href="#mi-estimation-and-plottings" title="Permalink to this headline">¶</a></h2>
+<p>Use moving average to decide the estimated MI in each iteration in the training</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># XY, X, Y, Ground_truth = generate_data(distribution=density, rho=opt.rho)</span>
-<span class="c1"># mi_list = []</span>
-<span class="c1"># acc_list = []</span>
-<span class="c1"># for i in range(opt.n_iters):</span>
-<span class="c1">#     data_joint = _resample(XY, batch_size=opt.batch_size)</span>
-<span class="c1">#     X_ref = resample(X, batch_size=opt.batch_size)</span>
-<span class="c1">#     Y_ref = resample(Y, batch_size=opt.batch_size)</span>
-<span class="c1">#     data_margin = torch.cat((X_ref, Y_ref), dim=1)</span>
-<span class="c1">#     valid = Variable(Tensor(opt.batch_size, 1).fill_(1.0), requires_grad=False)</span>
-<span class="c1">#     fake = Variable(Tensor(opt.batch_size, 1).fill_(0.0), requires_grad=False)</span>
-<span class="c1">#     train_data = torch.cat((data_joint, data_margin), dim=0)</span>
-<span class="c1">#     labels = torch.cat((valid, fake), dim=0)</span>
-<span class="c1">#     pred_label = discriminator(train_data)</span>
-<span class="c1">#     alpha = data_margin.shape[0]/data_joint.shape[0]</span>
-
-<span class="c1">#     acc_list.append((torch.tensor([1 if x&gt;0.5 else 0 for x in pred_label]) == labels.flatten()).sum().float()/labels.shape[0])</span>
-<span class="c1">#     optimizer_D.zero_grad()</span>
-<span class="c1">#     loss = adversarial_loss(pred_label, labels)</span>
-<span class="c1">#     # loss = bcelogit_loss(pred_label, labels)</span>
-<span class="c1">#     # loss = smooth_ce_loss(pred_label, labels, opt.confidence, 2)</span>
-<span class="c1">#     loss.backward()</span>
-<span class="c1">#     optimizer_D.step()</span>
-<span class="c1">#     with torch.no_grad():</span>
-<span class="c1">#         mi_est = mi_estimate(discriminator, XY, opt.gamma, alpha)</span>
-<span class="c1">#         if torch.isinf(mi_est):</span>
-<span class="c1">#             mi_est = torch.from_numpy(np.array(mi_list[-1]))</span>
-<span class="c1">#         # mi_est = mi_estimate_KL(discriminator, data_joint, data_margin, opt.gamma)</span>
-<span class="c1">#         mi_list.append(mi_est.item())</span>
-<span class="c1">#     if i%500==0:</span>
-<span class="c1">#         print(&quot;Iternation: %d, loss: %f, mi_est: %f&quot;%(i, loss.item(), mi_est))</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ma_rate</span> <span class="o">=</span> <span class="mf">0.01</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ma_rate</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># moving average rate</span>
 <span class="n">mi_copy</span> <span class="o">=</span> <span class="n">mi_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">mi_list</span><span class="p">)):</span>
     <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ma_rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ma_rate</span> <span class="o">*</span> <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-
-<span class="n">acc_copy</span> <span class="o">=</span> <span class="n">acc_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">acc_copy</span><span class="p">)):</span>
-    <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ma_rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ma_rate</span> <span class="o">*</span> <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Plot the MI estimation curve against the training iteration, togeter the ground truth.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;MI estimate&#39;</span><span class="p">)</span>
@@ -569,15 +624,17 @@ Iternation: 39500, loss: 4.605225
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f5510d2cb50&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x2575fe05c88&gt;
 </pre></div>
 </div>
-<img alt="_images/infonce_9_1.svg" src="_images/infonce_9_1.svg" /></div>
+<img alt="_images/infonce_28_1.svg" src="_images/infonce_28_1.svg" /></div>
 </div>
+<p>Save the model</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="s1">&#39;./InfoNCE</span><span class="si">{}</span><span class="s1">.pth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">))</span>
 </pre></div>
+</div>
 </div>
 </div>
 </div>

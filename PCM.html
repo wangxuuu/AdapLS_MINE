@@ -81,6 +81,8 @@ commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/sphinx-book-theme.d31b09fe5c1d09cb49b26a786de4a05d.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe,.cell"
@@ -90,7 +92,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="InfoNCE" href="infonce.html" />
+    <link rel="prev" title="Estimating MI by noise contrastive method (InfoNCE)" href="infonce.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -119,7 +121,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <ul class="nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="README.html">
-   Demo
+   Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation
   </a>
  </li>
 </ul>
@@ -131,7 +133,7 @@ commentsRunWhenDOMLoaded(addUtterances);
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="infonce.html">
-   InfoNCE
+   Estimating MI by noise contrastive method (InfoNCE)
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -203,6 +205,12 @@ commentsRunWhenDOMLoaded(addUtterances);
     <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/ccha23/binder/master?urlpath=git-pull?repo%3Dhttps%3A%2F%2Fmybinder.org%2Fv2%2Fgh%2Fwangxuuu%2FAdapLS_MINE%2Fmain%3Furlpath%3Dtree%2FPCM.ipynb%26branch%3Dmain"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
         
         
         <a class="jupyterhub-button" href="https://ltjh.cs.cityu.edu.hk/hub/user-redirect/git-pull?repo=https://github.com/wangxuuu/AdapLS_MINE&urlpath=tree/AdapLS_MINE/PCM.ipynb&branch=main"><button type="button"
@@ -666,7 +674,7 @@ Iternation: 39500, loss: 0.003951, mi_est: 7.088460
     
     <div class='prev-next-bottom'>
         
-    <a class='left-prev' id="prev-link" href="infonce.html" title="previous page">InfoNCE</a>
+    <a class='left-prev' id="prev-link" href="infonce.html" title="previous page">Estimating MI by noise contrastive method (InfoNCE)</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">
