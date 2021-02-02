@@ -93,7 +93,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="PCM" href="PCM.html" />
-    <link rel="prev" title="Adaptive Label Smoothing" href="adaptive_LS_PCM.html" />
+    <link rel="prev" title="Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)" href="adaptive_LS_PCM.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -129,7 +129,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="current nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="adaptive_LS_PCM.html">
-   Adaptive Label Smoothing
+   Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -244,23 +244,23 @@ commentsRunWhenDOMLoaded(addUtterances);
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#import-packages-set-gpu-and-random-seeds">
-   Import packages, set GPU and random seeds
+  <a class="reference internal nav-link" href="#setup">
+   Setup
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#define-functions-and-neural-networks-nn">
-   Define functions and neural networks (NN)
+  <a class="reference internal nav-link" href="#model">
+   Model
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#generate-samples-and-train-the-neural-network">
-   Generate samples and train the neural network.
+  <a class="reference internal nav-link" href="#training">
+   Training
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#mi-estimation-and-plottings">
-   MI estimation and plottings
+  <a class="reference internal nav-link" href="#mi-estimates">
+   MI estimates
   </a>
  </li>
 </ul>
@@ -276,9 +276,9 @@ commentsRunWhenDOMLoaded(addUtterances);
                 
   <div class="section" id="estimating-mi-by-noise-contrastive-method-infonce">
 <h1>Estimating MI by noise contrastive method (InfoNCE)<a class="headerlink" href="#estimating-mi-by-noise-contrastive-method-infonce" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="import-packages-set-gpu-and-random-seeds">
-<h2>Import packages, set GPU and random seeds<a class="headerlink" href="#import-packages-set-gpu-and-random-seeds" title="Permalink to this headline">¶</a></h2>
-<p>import necessary packages</p>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<p>The following cell imports the necessary packages:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -320,13 +320,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Arguments for running</span>
-</pre></div>
-</div>
-</div>
-</div>
+<p>Specify the hyper-parameters:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># arguments</span>
@@ -353,24 +347,34 @@ commentsRunWhenDOMLoaded(addUtterances);
 </div>
 </div>
 </div>
+<p>Specify the distribution to generate the data samples:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the kind of distribution to generate; Two choice here: &#39;Gaussian&#39; and &#39;MixedGaussian</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Two choice here: &#39;Gaussian&#39; and &#39;MixedGaussian&#39;</span>
 <span class="n">density</span> <span class="o">=</span> <span class="s1">&#39;Gaussian&#39;</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-<div class="section" id="define-functions-and-neural-networks-nn">
-<h2>Define functions and neural networks (NN)<a class="headerlink" href="#define-functions-and-neural-networks-nn" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p>Define the function <code class="docutils literal notranslate"><span class="pre">generate_data</span></code> for generating Gaussian or Mixed Gaussian distributions.</p>
 <ul class="simple">
-<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as
-$<span class="math notranslate nohighlight">\( p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) \)</span>$</p></li>
-<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as
-$<span class="math notranslate nohighlight">\( p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) \)</span>$</p></li>
+<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
 </ul>
+<div class="amsmath math notranslate nohighlight" id="equation-d14be2e5-53b5-4281-b35b-ec3f685093d4">
+<span class="eqno">(1)<a class="headerlink" href="#equation-d14be2e5-53b5-4281-b35b-ec3f685093d4" title="Permalink to this equation">¶</a></span>\[\begin{align}
+p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right)
+\end{align}\]</div>
+<ul class="simple">
+<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+</ul>
+<div class="amsmath math notranslate nohighlight" id="equation-e693954d-3e18-4ff6-9952-1d6d3ff5049d">
+<span class="eqno">(2)<a class="headerlink" href="#equation-e693954d-3e18-4ff6-9952-1d6d3ff5049d" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
++ \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right)
+\end{align}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
@@ -428,13 +432,13 @@ $<span class="math notranslate nohighlight">\( p_{\rm X \rm Y} = \frac{1}{2} \pr
         <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-        
+
         <span class="k">return</span> <span class="n">output</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>Function <code class="docutils literal notranslate"><span class="pre">_resample</span></code> is for resampling the given data samples for training neural network.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">_resample</span></code> below is for resampling the given data samples for training the neural network.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_resample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -447,12 +451,15 @@ $<span class="math notranslate nohighlight">\( p_{\rm X \rm Y} = \frac{1}{2} \pr
 </div>
 </div>
 </div>
-<p>Function <code class="docutils literal notranslate"><span class="pre">infonce_loss</span></code> returns a lower bound of infoNCE loss:
-$<span class="math notranslate nohighlight">\(l_{infoNCE} ({\rm X}, {\rm Y})= \sup \limits_{f \in \mathcal{F}} \mathbb{E}\left[\log \frac{e^{f({\rm X}, {\rm Y})}}{\mathbb{E} \left[ e^{f({\rm X}, {\rm Y'})} | {\rm X} \right]} \right]\)</span>$
-where <code class="docutils literal notranslate"><span class="pre">f()</span></code> is implemented by a neural network.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">infonce_loss</span></code> below returns the empirical estimate of the following infoNCE lower bound on the mutual information <span class="math notranslate nohighlight">\(I(X\wedge Y)\)</span>:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-45f5d716-153b-40e5-a2cf-5b49b17ccaa3">
+<span class="eqno">(3)<a class="headerlink" href="#equation-45f5d716-153b-40e5-a2cf-5b49b17ccaa3" title="Permalink to this equation">¶</a></span>\[\begin{align}
+I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, Y')} \right| X \right]} \right] \leq I(X\wedge Y) 
+\end{align}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f: \mathcal{X}\times \mathcal{Y}\to \mathbb{R}\)</span> is a function to be implemented by a neural network, and <span class="math notranslate nohighlight">\(p_{Y'|X,Y}(y'|x,y)=p_{Y}(y)\)</span>, i.e., <span class="math notranslate nohighlight">\(Y'\)</span> is identically distributed as <span class="math notranslate nohighlight">\(Y\)</span> and independent of <span class="math notranslate nohighlight">\((X,Y)\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">infonce_loss</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">x_samples</span><span class="p">,</span> <span class="n">y_samples</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">infonce_bound</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">x_samples</span><span class="p">,</span> <span class="n">y_samples</span><span class="p">):</span>
     <span class="n">sample_size</span> <span class="o">=</span> <span class="n">x_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">x_tile</span> <span class="o">=</span> <span class="n">x_samples</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">((</span><span class="n">sample_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">y_tile</span> <span class="o">=</span> <span class="n">y_samples</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
@@ -466,16 +473,12 @@ where <code class="docutils literal notranslate"><span class="pre">f()</span></c
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="generate-samples-and-train-the-neural-network">
-<h2>Generate samples and train the neural network.<a class="headerlink" href="#generate-samples-and-train-the-neural-network" title="Permalink to this headline">¶</a></h2>
+<p>The neural network <code class="docutils literal notranslate"><span class="pre">discriminator</span></code> below implements <span class="math notranslate nohighlight">\(f\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
-<span class="n">bcelogit_loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>  <span class="c1"># bcelogit_loss</span>
-
-<span class="c1"># move NN model GPU if GPU is available</span>
+<span class="c1"># move NN model to GPU if GPU is available</span>
 <span class="k">if</span> <span class="n">cuda</span><span class="p">:</span>
     <span class="n">discriminator</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 
@@ -485,7 +488,21 @@ where <code class="docutils literal notranslate"><span class="pre">f()</span></c
 </div>
 </div>
 </div>
-<p>Generate samples and train the neural network.</p>
+</div>
+<div class="section" id="training">
+<h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
+<p>Since maximizing the infoNCE bound over <span class="math notranslate nohighlight">\(f\)</span> attains the mutual information</p>
+<div class="amsmath math notranslate nohighlight" id="equation-8d12b88a-b85f-422e-84dd-db74462ec3ab">
+<span class="eqno">(4)<a class="headerlink" href="#equation-8d12b88a-b85f-422e-84dd-db74462ec3ab" title="Permalink to this equation">¶</a></span>\[\begin{align}
+I(X\wedge Y) = \sup_{f} I_{\text{infoNCE}}(f),
+\end{align}\]</div>
+<p>we train the neural network to minimize the loss <span class="math notranslate nohighlight">\(-I_{\text{infoNCE}}(f)\)</span>. The optimal solution <span class="math notranslate nohighlight">\(f\)</span> satisfies</p>
+<div class="amsmath math notranslate nohighlight" id="equation-d1d81afc-228f-4e84-b074-5031adb6257b">
+<span class="eqno">(5)<a class="headerlink" href="#equation-d1d81afc-228f-4e84-b074-5031adb6257b" title="Permalink to this equation">¶</a></span>\[\begin{align}
+f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y \in \mathcal{Y}
+\end{align}\]</div>
+<p>for any constant <span class="math notranslate nohighlight">\(c\)</span>.</p>
+<p>The following cell train the neural network using the data samples.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Ground_truth</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">)</span>
@@ -494,9 +511,9 @@ where <code class="docutils literal notranslate"><span class="pre">f()</span></c
     <span class="n">data_joint</span> <span class="o">=</span> <span class="n">_resample</span><span class="p">(</span><span class="n">XY</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
     <span class="n">train_x</span> <span class="o">=</span> <span class="n">data_joint</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">]</span>
     <span class="n">train_y</span> <span class="o">=</span> <span class="n">data_joint</span><span class="p">[:,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">:]</span>
-    
+
     <span class="n">optimizer_D</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">infonce_loss</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span> <span class="c1"># negative infonce_loss as the loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span> <span class="n">infonce_bound</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span> <span class="c1"># negative infonce_loss as the loss</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 
     <span class="n">optimizer_D</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -592,9 +609,9 @@ Iternation: 39500, loss: 4.582762
 </div>
 </div>
 </div>
-<div class="section" id="mi-estimation-and-plottings">
-<h2>MI estimation and plottings<a class="headerlink" href="#mi-estimation-and-plottings" title="Permalink to this headline">¶</a></h2>
-<p>Use moving average to decide the estimated MI in each iteration in the training</p>
+<div class="section" id="mi-estimates">
+<h2>MI estimates<a class="headerlink" href="#mi-estimates" title="Permalink to this headline">¶</a></h2>
+<p>Use moving average to smooth the estimated MI in each training iteration.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ma_rate</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># moving average rate</span>
@@ -605,7 +622,7 @@ Iternation: 39500, loss: 4.582762
 </div>
 </div>
 </div>
-<p>Plot the MI estimation curve against the training iteration, togeter the ground truth.</p>
+<p>Plot the MI estimation curve against the training iteration, together with the ground truth.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;MI estimate&#39;</span><span class="p">)</span>
@@ -627,9 +644,9 @@ Iternation: 39500, loss: 4.582762
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x2575fe05c88&gt;
 </pre></div>
 </div>
-<img alt="_images/infonce_28_1.svg" src="_images/infonce_28_1.svg" /></div>
+<img alt="_images/infonce_31_1.svg" src="_images/infonce_31_1.svg" /></div>
 </div>
-<p>Save the model</p>
+<p>Save the mutual information estimates.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="s1">&#39;./InfoNCE</span><span class="si">{}</span><span class="s1">.pth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">))</span>
@@ -668,7 +685,7 @@ Iternation: 39500, loss: 4.582762
     
     <div class='prev-next-bottom'>
         
-    <a class='left-prev' id="prev-link" href="adaptive_LS_PCM.html" title="previous page">Adaptive Label Smoothing</a>
+    <a class='left-prev' id="prev-link" href="adaptive_LS_PCM.html" title="previous page">Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)</a>
     <a class='right-next' id="next-link" href="PCM.html" title="next page">PCM</a>
 
     </div>
