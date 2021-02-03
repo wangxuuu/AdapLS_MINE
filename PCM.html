@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PCM</title>
+    <title>Estimating MI by Probabilistic Classifier Method (PCM)</title>
     
   <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
 
@@ -138,7 +138,12 @@ commentsRunWhenDOMLoaded(addUtterances);
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   PCM
+   Estimating MI by Probabilistic Classifier Method (PCM)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="#setup">
+   Setup
   </a>
  </li>
 </ul>
@@ -237,6 +242,42 @@ commentsRunWhenDOMLoaded(addUtterances);
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
         
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Estimating MI by Probabilistic Classifier Method (PCM)
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setup">
+   Setup
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#model">
+     Model
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#training">
+     Training
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mi-estimates">
+     MI estimates
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+        </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -244,12 +285,15 @@ commentsRunWhenDOMLoaded(addUtterances);
         
               <div>
                 
-  <div class="section" id="pcm">
-<h1>PCM<a class="headerlink" href="#pcm" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="estimating-mi-by-probabilistic-classifier-method-pcm">
+<h1>Estimating MI by Probabilistic Classifier Method (PCM)<a class="headerlink" href="#estimating-mi-by-probabilistic-classifier-method-pcm" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="setup">
+<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
+<p>The following cell imports the necessary packages:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Discrimeter MI estimator (MIT)</span>
-<span class="kn">import</span> <span class="nn">torch</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
@@ -270,6 +314,31 @@ commentsRunWhenDOMLoaded(addUtterances);
 </div>
 </div>
 </div>
+<p>Use GPU if GPU is available.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cuda</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="kc">False</span>
+<span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span>
+<span class="n">LongTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">LongTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">FloatTensor</span><span class="p">)</span>
+<span class="n">Tensor</span> <span class="o">=</span> <span class="n">FloatTensor</span>
+<span class="c1">#Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Set random seed for reproducibility.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">SEED</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Specify the hyper-parameters:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
@@ -284,10 +353,11 @@ commentsRunWhenDOMLoaded(addUtterances);
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--lr&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: learning rate&quot;</span><span class="p">)</span>
 <span class="c1"># parser.add_argument(&quot;--latent_dim&quot;, type=int, default=1, help=&quot;dimensionality of the latent space&quot;)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--hidden_dim&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Hidden dimension&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--alpha&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;RMSprop: smoothing constant &quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--c_0_1_ratio&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ratio of samples with label 0 and samples with label 1 &quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ma_rate&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;move average rate&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ma_ef&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;move average ef&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--confidence&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;smooth parameter&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--alpha&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;smooth parameter&quot;</span><span class="p">)</span>
+
 
 <span class="c1"># opt = parser.parse_args()</span>
 <span class="n">opt</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
@@ -295,46 +365,69 @@ commentsRunWhenDOMLoaded(addUtterances);
 </div>
 </div>
 </div>
+<p>Specify the distribution to generate the data samples:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># construct the data</span>
-<span class="n">rep</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Two choices here: &#39;Gaussian&#39; and &#39;MixedGaussian</span>
 <span class="n">density</span> <span class="o">=</span> <span class="s1">&#39;Gaussian&#39;</span>
-<span class="c1"># use GPU if available</span>
-<span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
-    <span class="c1"># np.random.seed(seed)</span>
-    <span class="c1"># # initialize random seed</span>
-    <span class="c1"># torch.manual_seed(seed)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="model">
+<h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<p>Define the function <code class="docutils literal notranslate"><span class="pre">generate_data</span></code> for generating Gaussian or Mixed Gaussian distributions.</p>
+<ul class="simple">
+<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+</ul>
+<div class="amsmath math notranslate nohighlight" id="equation-6260e0d6-66be-4dee-bf55-4dd37f86cf0f">
+<span class="eqno">(11)<a class="headerlink" href="#equation-6260e0d6-66be-4dee-bf55-4dd37f86cf0f" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
+\end{align}\]</div>
+<ul class="simple">
+<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+</ul>
+<div class="amsmath math notranslate nohighlight" id="equation-f5b4ea38-eb70-461d-9a3c-1ae2008f1d0e">
+<span class="eqno">(12)<a class="headerlink" href="#equation-f5b4ea38-eb70-461d-9a3c-1ae2008f1d0e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+ p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
+ \end{align}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+    <span class="c1"># rho is the covariance for generating distributions</span>
+    <span class="c1"># mu1 and mu2 are means for generating Mixed Gaussian distribution </span>
     <span class="n">mu1</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">mu2</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
-    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
-    <span class="c1"># print(&#39;start generating&#39;)</span>
+    <span class="c1"># mg is an object of Class Gaussian or MixedGaussian</span>
     <span class="k">if</span> <span class="n">distribution</span><span class="o">==</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">:</span>
         <span class="n">mg</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mg</span> <span class="o">=</span> <span class="n">MixedGaussian</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">mean1</span><span class="o">=</span><span class="n">mu1</span><span class="p">,</span> <span class="n">mean2</span><span class="o">=</span><span class="n">mu2</span><span class="p">,</span><span class="n">rho1</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span><span class="n">rho2</span><span class="o">=-</span><span class="n">rho</span><span class="p">)</span>
-    <span class="c1"># print(&#39;end generate&#39;)</span>
+        <span class="n">mg</span> <span class="o">=</span> <span class="n">MixedGaussian</span><span class="p">(</span><span class="n">sample_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">mean1</span><span class="o">=</span><span class="n">mu1</span><span class="p">,</span> <span class="n">mean2</span><span class="o">=</span><span class="n">mu2</span><span class="p">,</span><span class="n">rho1</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span> <span class="n">rho2</span><span class="o">=-</span><span class="n">rho</span><span class="p">)</span>
+
+    <span class="c1"># Calculate the ground truth MI between X and Y for (X, Y) from mg</span>
     <span class="n">mi</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">ground_truth</span> <span class="o">*</span> <span class="n">opt</span><span class="o">.</span><span class="n">d</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c1"># Create X, Y for storing generated samples</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">,</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+
+    <span class="c1"># Generate samples of random variable X,Y and XY</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">):</span>
+        <span class="c1"># In each iteration, mg.data will generate samples of two dimensions where one dimension for X and another for Y respectively </span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">data</span>
         <span class="n">X</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">Y</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">Y</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>        
     <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
     <span class="n">XY</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">XY</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">mi</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Define the neural network.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Net</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -355,84 +448,58 @@ commentsRunWhenDOMLoaded(addUtterances);
         <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="nb">input</span><span class="p">))</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
-        <span class="c1"># output = self.fc3(output)</span>
         <span class="k">return</span> <span class="n">output</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">_resample</span></code> below is for resampling the given data samples for training the neural network.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span>
-
-<span class="c1"># loss</span>
-<span class="n">categorical_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
-<span class="n">adversarial_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()</span>
-<span class="n">bcelogit_loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>
-
-<span class="k">if</span> <span class="n">cuda</span><span class="p">:</span>
-    <span class="n">discriminator</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-    <span class="n">adversarial_loss</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-<span class="c1"># Optimizers Adam</span>
-<span class="n">optimizer_D</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">discriminator</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">b1</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">b2</span><span class="p">))</span>
-
-<span class="k">def</span> <span class="nf">_resample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_resample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="c1"># Resample the given data sample.</span>
     <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
         <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
     <span class="n">batch</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">batch</span>
-
-<span class="k">def</span> <span class="nf">smooth_ce_loss</span><span class="p">(</span><span class="n">pre_label</span><span class="p">,</span> <span class="n">true_label</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">):</span>
-    <span class="n">new_labels</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">smoothing</span><span class="p">)</span> <span class="o">*</span> <span class="n">true_label</span> <span class="o">+</span> <span class="n">smoothing</span> <span class="o">/</span> <span class="n">num_classes</span>
-    <span class="k">return</span> <span class="n">adversarial_loss</span><span class="p">(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">new_labels</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>The neural network <code class="docutils literal notranslate"><span class="pre">discriminator</span></code> below implements and outputs <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}(1|x,y)\)</span> before clipping:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># XY, X, Y, Ground_truth = generate_data(distribution=density, rho=opt.rho)</span>
-<span class="c1"># mi_list = []</span>
-<span class="c1"># acc_list = []</span>
-<span class="c1"># for i in range(opt.n_iters):</span>
-<span class="c1">#     data_joint = _resample(XY, batch_size=opt.batch_size)</span>
-<span class="c1">#     train_x = data_joint[:,0:opt.d]</span>
-<span class="c1">#     train_y = data_joint[:,opt.d:]</span>
-<span class="c1">#     x_tiled = torch.stack([train_x] * opt.batch_size, dim=0)</span>
-<span class="c1">#     y_tiled = torch.stack([train_y] * opt.batch_size, dim=1)</span>
-<span class="c1">#     # xy is [batch_size * batch_size, x_dim + y_dim]</span>
-<span class="c1">#     xy_pairs = torch.reshape(torch.cat((x_tiled, y_tiled), dim=2), [</span>
-<span class="c1">#                                 opt.batch_size * opt.batch_size, -1])</span>
-<span class="c1">#     pred_label = discriminator(xy_pairs)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="c1"># move NN model GPU if GPU is available</span>
+<span class="k">if</span> <span class="n">cuda</span><span class="p">:</span>
+    <span class="n">discriminator</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 
-<span class="c1">#     labels = [0.]*(xy_pairs.shape[0])</span>
-<span class="c1">#     labels[::(opt.batch_size+1)] = [1.]*opt.batch_size</span>
-<span class="c1">#     labels = torch.tensor(labels).type_as(pred_label)</span>
-<span class="c1">#     labels = labels.view(-1,1)</span>
-    
-<span class="c1">#     acc_list.append((torch.tensor([1 if x&gt;0.5 else 0 for x in pred_label]) == labels.flatten()).sum().float()/labels.shape[0])</span>
-<span class="c1">#     optimizer_D.zero_grad()</span>
-<span class="c1">#     loss = adversarial_loss(pred_label, labels)</span>
-<span class="c1">#     loss.backward()</span>
-<span class="c1">#     # nn.utils.clip_grad_norm_(discriminator.parameters(), 1)</span>
-<span class="c1">#     optimizer_D.step()</span>
-<span class="c1">#     with torch.no_grad():</span>
-<span class="c1">#         mi_est = mi_estimate(discriminator, XY, X, Y, opt.gamma, opt.batch_size-1)</span>
-<span class="c1">#         # mi_est = mi_estimate_KL(discriminator, data_joint, data_margin, opt.gamma)</span>
-<span class="c1">#     mi_list.append(mi_est)</span>
-<span class="c1">#     if i%500==0:</span>
-<span class="c1">#         print(&quot;Iternation: %d, loss: %f, mi_est: %f&quot;%(i, loss.item(), mi_est))</span>
+<span class="c1"># Adam opetimizer</span>
+<span class="n">optimizer_D</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">discriminator</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">b1</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">b2</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </div>
+</div>
+<div class="section" id="training">
+<h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
+<p>The estimate of MI given by Probabilistic Classifier Method (PCM) is as follows:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-f0d4b5c9-cdbc-4049-a61d-a41698d60ace">
+<span class="eqno">(13)<a class="headerlink" href="#equation-f0d4b5c9-cdbc-4049-a61d-a41698d60ace" title="Permalink to this equation">¶</a></span>\[\begin{align}
+I({\rm X, \rm Y}) = \mathbb{E} \left[ \ln r({\rm X, Y}) \right],
+\end{align}\]</div>
+<p>where</p>
+<div class="amsmath math notranslate nohighlight" id="equation-b965bfd7-357b-42f0-8caa-be8f8adb3ad1">
+<span class="eqno">(14)<a class="headerlink" href="#equation-b965bfd7-357b-42f0-8caa-be8f8adb3ad1" title="Permalink to this equation">¶</a></span>\[\begin{align}
+r({\rm X, Y}) := \frac{p_{\rm C}(0)}{p_{\rm C}(1)} \cdot \frac{p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}} (1|x,y)}{p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}} (0|x,y)}.
+\end{align}\]</div>
+<p>To obtain MI estimate of given samples by Probabilistic Classifier Method (PCM), we train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> to implement <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}(1|x,y)\)</span> by minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}\)</span>.</p>
+<p>The output of the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> may be clipped to a certain range before used for calculating MI estimate.</p>
+<p>The following cell train the neural network using the data samples.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Ground_truth</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">)</span>
-<span class="n">mi_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">acc_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">mi_list</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># storing the infoNCE of each iteration</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">n_iters</span><span class="p">):</span>
     <span class="n">data_joint</span> <span class="o">=</span> <span class="n">_resample</span><span class="p">(</span><span class="n">XY</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
     <span class="n">X_ref</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
@@ -445,19 +512,18 @@ commentsRunWhenDOMLoaded(addUtterances);
     <span class="n">pred_label</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">data_margin</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">data_joint</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">acc_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span> <span class="k">if</span> <span class="n">x</span><span class="o">&gt;</span><span class="mf">0.5</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pred_label</span><span class="p">])</span> <span class="o">==</span> <span class="n">labels</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">/</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
     <span class="n">optimizer_D</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
     <span class="c1"># PCM loss</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="n">adversarial_loss</span><span class="p">(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-    <span class="c1"># Label smoothing loss</span>
-    <span class="c1"># loss = smooth_ce_loss(pred_label, labels, opt.confidence, 2)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
     <span class="n">optimizer_D</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
     <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
         <span class="n">mi_est</span> <span class="o">=</span> <span class="n">mi_estimate</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">XY</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">mi_est</span><span class="p">):</span>
             <span class="n">mi_est</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mi_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="c1"># mi_est = mi_estimate_KL(discriminator, data_joint, data_margin, opt.gamma)</span>
+
         <span class="n">mi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi_est</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0:
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iternation: </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2">, mi_est: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">mi_est</span><span class="p">))</span>
@@ -465,104 +531,105 @@ commentsRunWhenDOMLoaded(addUtterances);
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.693082, mi_est: 0.000148
-Iternation: 500, loss: 0.692399, mi_est: 0.002072
-Iternation: 1000, loss: 0.612301, mi_est: 0.169932
-Iternation: 1500, loss: 0.275360, mi_est: 1.281887
-Iternation: 2000, loss: 0.134634, mi_est: 2.314244
-Iternation: 2500, loss: 0.105807, mi_est: 2.813247
-Iternation: 3000, loss: 0.119355, mi_est: 3.367665
-Iternation: 3500, loss: 0.056974, mi_est: 3.876153
-Iternation: 4000, loss: 0.057302, mi_est: 4.065181
-Iternation: 4500, loss: 0.037920, mi_est: 4.411432
-Iternation: 5000, loss: 0.049970, mi_est: 4.405241
-Iternation: 5500, loss: 0.050616, mi_est: 4.746511
-Iternation: 6000, loss: 0.035372, mi_est: 4.691652
-Iternation: 6500, loss: 0.017362, mi_est: 5.154772
-Iternation: 7000, loss: 0.045504, mi_est: 4.959334
-Iternation: 7500, loss: 0.051600, mi_est: 5.285920
-Iternation: 8000, loss: 0.020403, mi_est: 5.630456
-Iternation: 8500, loss: 0.017227, mi_est: 5.892772
-Iternation: 9000, loss: 0.017062, mi_est: 5.725641
-Iternation: 9500, loss: 0.009736, mi_est: 5.704995
-Iternation: 10000, loss: 0.016056, mi_est: 6.100080
-Iternation: 10500, loss: 0.035593, mi_est: 6.049239
-Iternation: 11000, loss: 0.019759, mi_est: 6.204098
-Iternation: 11500, loss: 0.015864, mi_est: 6.206269
-Iternation: 12000, loss: 0.014936, mi_est: 6.137826
-Iternation: 12500, loss: 0.007122, mi_est: 6.074224
-Iternation: 13000, loss: 0.006710, mi_est: 6.446371
-Iternation: 13500, loss: 0.032771, mi_est: 6.124407
-Iternation: 14000, loss: 0.003011, mi_est: 6.936546
-Iternation: 14500, loss: 0.014809, mi_est: 6.301764
-Iternation: 15000, loss: 0.021748, mi_est: 6.547460
-Iternation: 15500, loss: 0.011671, mi_est: 6.524352
-Iternation: 16000, loss: 0.006535, mi_est: 6.912330
-Iternation: 16500, loss: 0.006041, mi_est: 6.883115
-Iternation: 17000, loss: 0.051953, mi_est: 6.573134
-Iternation: 17500, loss: 0.010719, mi_est: 6.275472
-Iternation: 18000, loss: 0.006409, mi_est: 6.828193
-Iternation: 18500, loss: 0.016974, mi_est: 6.515955
-Iternation: 19000, loss: 0.011272, mi_est: 6.809452
-Iternation: 19500, loss: 0.097709, mi_est: 5.968369
-Iternation: 20000, loss: 0.056988, mi_est: 6.329638
-Iternation: 20500, loss: 0.005348, mi_est: 6.594182
-Iternation: 21000, loss: 0.006547, mi_est: 6.485223
-Iternation: 21500, loss: 0.009647, mi_est: 6.618744
-Iternation: 22000, loss: 0.028278, mi_est: 6.739683
-Iternation: 22500, loss: 0.054447, mi_est: 6.284897
-Iternation: 23000, loss: 0.013163, mi_est: 7.001101
-Iternation: 23500, loss: 0.005509, mi_est: 6.804899
-Iternation: 24000, loss: 0.006301, mi_est: 6.966526
-Iternation: 24500, loss: 0.004174, mi_est: 7.315685
-Iternation: 25000, loss: 0.027327, mi_est: 6.563746
-Iternation: 25500, loss: 0.032112, mi_est: 7.105114
-Iternation: 26000, loss: 0.051844, mi_est: 6.159942
-Iternation: 26500, loss: 0.003064, mi_est: 7.331146
-Iternation: 27000, loss: 0.004050, mi_est: 6.888069
-Iternation: 27500, loss: 0.009651, mi_est: 6.768780
-Iternation: 28000, loss: 0.003191, mi_est: 7.239267
-Iternation: 28500, loss: 0.005950, mi_est: 6.607604
-Iternation: 29000, loss: 0.007802, mi_est: 6.514677
-Iternation: 29500, loss: 0.038715, mi_est: 6.882015
-Iternation: 30000, loss: 0.007317, mi_est: 6.547231
-Iternation: 30500, loss: 0.003816, mi_est: 6.619224
-Iternation: 31000, loss: 0.050757, mi_est: 6.978207
-Iternation: 31500, loss: 0.006878, mi_est: 6.571222
-Iternation: 32000, loss: 0.005476, mi_est: 6.328119
-Iternation: 32500, loss: 0.007280, mi_est: 6.760098
-Iternation: 33000, loss: 0.004481, mi_est: 6.842766
-Iternation: 33500, loss: 0.003865, mi_est: 7.000284
-Iternation: 34000, loss: 0.004145, mi_est: 6.946411
-Iternation: 34500, loss: 0.008932, mi_est: 6.290199
-Iternation: 35000, loss: 0.007271, mi_est: 6.920841
-Iternation: 35500, loss: 0.007696, mi_est: 6.805411
-Iternation: 36000, loss: 0.005934, mi_est: 6.891289
-Iternation: 36500, loss: 0.003915, mi_est: 6.847476
-Iternation: 37000, loss: 0.003352, mi_est: 6.976363
-Iternation: 37500, loss: 0.002525, mi_est: 7.321614
-Iternation: 38000, loss: 0.059520, mi_est: 6.927707
-Iternation: 38500, loss: 0.003355, mi_est: 7.064632
-Iternation: 39000, loss: 0.004447, mi_est: 7.216806
-Iternation: 39500, loss: 0.003951, mi_est: 7.088460
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.692903, mi_est: -0.000002
+Iternation: 500, loss: 0.692608, mi_est: 0.002726
+Iternation: 1000, loss: 0.635445, mi_est: 0.148280
+Iternation: 1500, loss: 0.299852, mi_est: 1.174935
+Iternation: 2000, loss: 0.143050, mi_est: 2.219919
+Iternation: 2500, loss: 0.103378, mi_est: 2.733875
+Iternation: 3000, loss: 0.091387, mi_est: 3.228176
+Iternation: 3500, loss: 0.056432, mi_est: 3.634112
+Iternation: 4000, loss: 0.038668, mi_est: 4.072002
+Iternation: 4500, loss: 0.050784, mi_est: 4.207734
+Iternation: 5000, loss: 0.029355, mi_est: 4.492753
+Iternation: 5500, loss: 0.022303, mi_est: 4.607281
+Iternation: 6000, loss: 0.055420, mi_est: 4.959693
+Iternation: 6500, loss: 0.050318, mi_est: 4.856138
+Iternation: 7000, loss: 0.020848, mi_est: 5.077870
+Iternation: 7500, loss: 0.015665, mi_est: 5.386826
+Iternation: 8000, loss: 0.014158, mi_est: 5.755594
+Iternation: 8500, loss: 0.011996, mi_est: 5.956127
+Iternation: 9000, loss: 0.026169, mi_est: 5.967770
+Iternation: 9500, loss: 0.027170, mi_est: 5.870547
+Iternation: 10000, loss: 0.086753, mi_est: 6.206309
+Iternation: 10500, loss: 0.051873, mi_est: 6.279074
+Iternation: 11000, loss: 0.009612, mi_est: 6.118644
+Iternation: 11500, loss: 0.009356, mi_est: 6.256437
+Iternation: 12000, loss: 0.011510, mi_est: 6.508713
+Iternation: 12500, loss: 0.025007, mi_est: 6.299327
+Iternation: 13000, loss: 0.007864, mi_est: 6.423207
+Iternation: 13500, loss: 0.006110, mi_est: 6.681663
+Iternation: 14000, loss: 0.042824, mi_est: 6.331740
+Iternation: 14500, loss: 0.011410, mi_est: 7.007097
+Iternation: 15000, loss: 0.018732, mi_est: 6.604127
+Iternation: 15500, loss: 0.029624, mi_est: 6.835336
+Iternation: 16000, loss: 0.018285, mi_est: 6.689474
+Iternation: 16500, loss: 0.004577, mi_est: 6.984955
+Iternation: 17000, loss: 0.005857, mi_est: 6.907297
+Iternation: 17500, loss: 0.005653, mi_est: 6.833298
+Iternation: 18000, loss: 0.005856, mi_est: 6.600643
+Iternation: 18500, loss: 0.005954, mi_est: 6.797545
+Iternation: 19000, loss: 0.007424, mi_est: 6.776154
+Iternation: 19500, loss: 0.011392, mi_est: 6.575362
+Iternation: 20000, loss: 0.045293, mi_est: 6.918100
+Iternation: 20500, loss: 0.043234, mi_est: 7.085193
+Iternation: 21000, loss: 0.008660, mi_est: 6.528543
+Iternation: 21500, loss: 0.007355, mi_est: 7.067154
+Iternation: 22000, loss: 0.009373, mi_est: 7.207806
+Iternation: 22500, loss: 0.002335, mi_est: 6.797565
+Iternation: 23000, loss: 0.035590, mi_est: 7.109912
+Iternation: 23500, loss: 0.083463, mi_est: 6.821227
+Iternation: 24000, loss: 0.076835, mi_est: 6.869300
+Iternation: 24500, loss: 0.008577, mi_est: 7.098741
+Iternation: 25000, loss: 0.008873, mi_est: 6.872461
+Iternation: 25500, loss: 0.023189, mi_est: 6.886714
+Iternation: 26000, loss: 0.003979, mi_est: 6.427460
+Iternation: 26500, loss: 0.007302, mi_est: 7.331257
+Iternation: 27000, loss: 0.033924, mi_est: 7.338734
+Iternation: 27500, loss: 0.003199, mi_est: 6.880060
+Iternation: 28000, loss: 0.054390, mi_est: 6.973955
+Iternation: 28500, loss: 0.020107, mi_est: 7.529371
+Iternation: 29000, loss: 0.013181, mi_est: 7.099856
+Iternation: 29500, loss: 0.002642, mi_est: 7.351871
+Iternation: 30000, loss: 0.022427, mi_est: 7.214326
+Iternation: 30500, loss: 0.005311, mi_est: 7.300424
+Iternation: 31000, loss: 0.002734, mi_est: 7.260329
+Iternation: 31500, loss: 0.004284, mi_est: 7.079559
+Iternation: 32000, loss: 0.016236, mi_est: 6.945529
+Iternation: 32500, loss: 0.006264, mi_est: 7.031272
+Iternation: 33000, loss: 0.005546, mi_est: 7.052639
+Iternation: 33500, loss: 0.001974, mi_est: 7.037043
+Iternation: 34000, loss: 0.044599, mi_est: 7.523210
+Iternation: 34500, loss: 0.003495, mi_est: 7.566719
+Iternation: 35000, loss: 0.004942, mi_est: 6.914466
+Iternation: 35500, loss: 0.002108, mi_est: 7.391064
+Iternation: 36000, loss: 0.022611, mi_est: 7.079919
+Iternation: 36500, loss: 0.001826, mi_est: 7.328032
+Iternation: 37000, loss: 0.026736, mi_est: 6.945180
+Iternation: 37500, loss: 0.006149, mi_est: 6.342172
+Iternation: 38000, loss: 0.010529, mi_est: 7.406454
+Iternation: 38500, loss: 0.008112, mi_est: 6.766532
+Iternation: 39000, loss: 0.022742, mi_est: 7.363206
+Iternation: 39500, loss: 0.003989, mi_est: 6.829446
 </pre></div>
 </div>
 </div>
 </div>
+</div>
+<div class="section" id="mi-estimates">
+<h2>MI estimates<a class="headerlink" href="#mi-estimates" title="Permalink to this headline">¶</a></h2>
+<p>Use moving average to smooth the estimated MI in each training iteration.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ma_rate</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="n">mi_copy</span> <span class="o">=</span> <span class="n">mi_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">mi_list</span><span class="p">)):</span>
     <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ma_rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ma_rate</span> <span class="o">*</span> <span class="n">mi_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-
-<span class="n">acc_copy</span> <span class="o">=</span> <span class="n">acc_list</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">acc_copy</span><span class="p">)):</span>
-    <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ma_rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ma_rate</span> <span class="o">*</span> <span class="n">acc_copy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Plot the MI estimation curve against the training iteration, togeter the ground truth.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;MI estimate&#39;</span><span class="p">)</span>
@@ -575,72 +642,21 @@ Iternation: 39500, loss: 0.003951, mi_est: 7.088460
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;MI estimation&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_d</span><span class="si">{}</span><span class="s1">_clip</span><span class="si">{}</span><span class="s1">_rho</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">density</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="c1"># plt.savefig(&#39;./results/DIEM/{}_d{}_clip{}_rho{}.pdf&#39;.format(density, opt.d, opt.gamma, opt.rho))</span>
-<span class="c1"># plt.savefig(&#39;./results/DIEM/NoClip{}_d{}_smooth{}_rho{}.pdf&#39;.format(density, opt.d, opt.confidence, opt.rho))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb7e80a1a90&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x22e97c8e908&gt;
 </pre></div>
 </div>
-<img alt="_images/PCM_9_1.svg" src="_images/PCM_9_1.svg" /></div>
+<img alt="_images/PCM_30_1.svg" src="_images/PCM_30_1.svg" /></div>
 </div>
+<p>Save the mutual information estimates.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># # plot the density ratio (discrimeter)</span>
-<span class="c1"># N = 100</span>
-<span class="c1"># arr = np.arange(N)</span>
-<span class="c1"># np.random.shuffle(arr)</span>
-<span class="c1"># x = np.linspace(-2,2,N)  </span>
-<span class="c1"># x1, x2 = np.meshgrid(x,x)</span>
-<span class="c1"># y = np.zeros((N,N))</span>
-<span class="c1"># for i in range(N):</span>
-<span class="c1">#     for j in range(N):</span>
-<span class="c1">#         test_x = np.array([x1[i,j],x2[i,j]]).T</span>
-<span class="c1">#         y[i,j] = discriminator(torch.Tensor(test_x))</span>
-<span class="c1">#         z[i,j] = np.log(alpha*y[i,j]/(1-y[i,j]))</span>
-<span class="c1"># # test_x = np.array([x,x[arr]]).T</span>
-<span class="c1"># # y = discriminator(torch.Tensor(test_x))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="s1">&#39;./PCM</span><span class="si">{}</span><span class="s1">.pth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import matplotlib.pyplot as plt</span>
-<span class="c1"># from mpl_toolkits.mplot3d import Axes3D</span>
-<span class="c1"># fig = plt.figure(figsize=(8, 5))</span>
-<span class="c1"># ax = plt.axes(projection=&#39;3d&#39;, elev=50, azim=-50)</span>
-<span class="c1"># ax.plot_surface(x1, x2, z, rstride=1, cstride=1, </span>
-<span class="c1">#                 edgecolor=&#39;none&#39;, alpha=.8, cmap=plt.get_cmap(&#39;rainbow&#39;))</span>
-<span class="c1"># # ax.plot_surface(x1, x2, y3, rstride=1, cstride=1, </span>
-<span class="c1"># #                 edgecolor=&#39;none&#39;, alpha=.8, cmap=plt.get_cmap(&#39;rainbow&#39;))</span>
-<span class="c1"># ax.set_xlabel(&#39;$x1$&#39;)</span>
-<span class="c1"># ax.set_ylabel(&#39;$x2$&#39;)</span>
-<span class="c1"># ax.set_zlabel(&#39;$z$&#39;)</span>
-<span class="c1"># # plt.savefig(&#39;./surface3d.pdf&#39;)</span>
-<span class="c1"># plt.show()</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import matplotlib.pyplot as plt</span>
-<span class="c1"># from mpl_toolkits.mplot3d import Axes3D</span>
-<span class="c1"># fig = plt.figure(figsize=(8, 5))</span>
-<span class="c1"># ax = plt.axes(projection=&#39;3d&#39;, elev=50, azim=-50)</span>
-<span class="c1"># ax.plot_surface(x1, x2, y, rstride=1, cstride=1, </span>
-<span class="c1">#                 edgecolor=&#39;none&#39;, alpha=.8, cmap=plt.get_cmap(&#39;rainbow&#39;))</span>
-<span class="c1"># # ax.plot_surface(x1, x2, y3, rstride=1, cstride=1, </span>
-<span class="c1"># #                 edgecolor=&#39;none&#39;, alpha=.8, cmap=plt.get_cmap(&#39;rainbow&#39;))</span>
-<span class="c1"># ax.set_xlabel(&#39;$x1$&#39;)</span>
-<span class="c1"># ax.set_ylabel(&#39;$x2$&#39;)</span>
-<span class="c1"># ax.set_zlabel(&#39;$z$&#39;)</span>
-<span class="c1"># # plt.savefig(&#39;./surface3d.pdf&#39;)</span>
-<span class="c1"># plt.show()</span>
-</pre></div>
 </div>
 </div>
 </div>

@@ -92,7 +92,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="PCM" href="PCM.html" />
+    <link rel="next" title="Estimating MI by Probabilistic Classifier Method (PCM)" href="PCM.html" />
     <link rel="prev" title="Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)" href="adaptive_LS_PCM.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -139,7 +139,12 @@ commentsRunWhenDOMLoaded(addUtterances);
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="PCM.html">
-   PCM
+   Estimating MI by Probabilistic Classifier Method (PCM)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="PCM.html#setup">
+   Setup
   </a>
  </li>
 </ul>
@@ -336,10 +341,11 @@ commentsRunWhenDOMLoaded(addUtterances);
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--lr&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: learning rate&quot;</span><span class="p">)</span>
 <span class="c1"># parser.add_argument(&quot;--latent_dim&quot;, type=int, default=1, help=&quot;dimensionality of the latent space&quot;)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--hidden_dim&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Hidden dimension&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--alpha&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;RMSprop: smoothing constant &quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--c_0_1_ratio&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ratio of samples with label 0 and samples with label 1 &quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ma_rate&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;move average rate&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ma_ef&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;move average ef&quot;</span><span class="p">)</span>
-<span class="c1"># parser.add_argument(&quot;--confidence&quot;, type=float, default=0.005, help=&quot;smooth parameter&quot;)</span>
+<span class="c1"># parser.add_argument(&quot;--alpha&quot;, type=float, default=1e-4, help=&quot;smooth parameter&quot;)</span>
+
 
 <span class="c1"># opt = parser.parse_args()</span>
 <span class="n">opt</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
@@ -350,7 +356,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <p>Specify the distribution to generate the data samples:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Two choice here: &#39;Gaussian&#39; and &#39;MixedGaussian&#39;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Two choices here: &#39;Gaussian&#39; and &#39;MixedGaussian&#39;</span>
 <span class="n">density</span> <span class="o">=</span> <span class="s1">&#39;Gaussian&#39;</span>
 </pre></div>
 </div>
@@ -363,15 +369,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="simple">
 <li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-5b47975b-3995-49e8-9090-300fa0f933f3">
-<span class="eqno">(1)<a class="headerlink" href="#equation-5b47975b-3995-49e8-9090-300fa0f933f3" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-55f20ff3-c55d-47bb-a74f-1ac225e3e9be">
+<span class="eqno">(6)<a class="headerlink" href="#equation-55f20ff3-c55d-47bb-a74f-1ac225e3e9be" title="Permalink to this equation">¶</a></span>\[\begin{align}
 p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
 <ul class="simple">
 <li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-f215b42a-949e-4fa2-a6e3-03f59d007d44">
-<span class="eqno">(2)<a class="headerlink" href="#equation-f215b42a-949e-4fa2-a6e3-03f59d007d44" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-49b6f33e-9594-423c-96e5-3e804ed10c8e">
+<span class="eqno">(7)<a class="headerlink" href="#equation-49b6f33e-9594-423c-96e5-3e804ed10c8e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
 p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
@@ -452,8 +458,8 @@ p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begi
 </div>
 </div>
 <p>The function <code class="docutils literal notranslate"><span class="pre">infonce_bound</span></code> below returns the empirical estimate of the following infoNCE lower bound on the mutual information <span class="math notranslate nohighlight">\(I(X\wedge Y)\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8489a54f-3e03-452b-8338-b6a0cf3ff6bf">
-<span class="eqno">(3)<a class="headerlink" href="#equation-8489a54f-3e03-452b-8338-b6a0cf3ff6bf" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-da0f6d6b-25f1-451e-8dd4-fdaa70c8e106">
+<span class="eqno">(8)<a class="headerlink" href="#equation-da0f6d6b-25f1-451e-8dd4-fdaa70c8e106" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, Y')} \right| X \right]} \right] \leq I(X\wedge Y) 
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(f: \mathcal{X}\times \mathcal{Y}\to \mathbb{R}\)</span> is a function to be implemented by a neural network, and <span class="math notranslate nohighlight">\(p_{Y'|X,Y}(y'|x,y)=p_{Y}(y)\)</span>, i.e., <span class="math notranslate nohighlight">\(Y'\)</span> is identically distributed as <span class="math notranslate nohighlight">\(Y\)</span> and independent of <span class="math notranslate nohighlight">\((X,Y)\)</span>.</p>
@@ -492,13 +498,13 @@ I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, 
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>Since maximizing the infoNCE bound over <span class="math notranslate nohighlight">\(f\)</span> attains the mutual information</p>
-<div class="amsmath math notranslate nohighlight" id="equation-09d1a150-a6bb-42df-9cfb-0a39f9b4f196">
-<span class="eqno">(4)<a class="headerlink" href="#equation-09d1a150-a6bb-42df-9cfb-0a39f9b4f196" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-f8ef66d5-4128-4458-b80d-21f07c7f9e41">
+<span class="eqno">(9)<a class="headerlink" href="#equation-f8ef66d5-4128-4458-b80d-21f07c7f9e41" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X\wedge Y) = \sup_{f} I_{\text{infoNCE}}(f),
 \end{align}\]</div>
 <p>we train the neural network to minimize the loss <span class="math notranslate nohighlight">\(-I_{\text{infoNCE}}(f)\)</span>. The optimal solution <span class="math notranslate nohighlight">\(f\)</span> satisfies</p>
-<div class="amsmath math notranslate nohighlight" id="equation-817b6830-d882-4e25-bf09-b971de63b11d">
-<span class="eqno">(5)<a class="headerlink" href="#equation-817b6830-d882-4e25-bf09-b971de63b11d" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-8e87c742-d557-49ef-aa2d-0286e067cdfc">
+<span class="eqno">(10)<a class="headerlink" href="#equation-8e87c742-d557-49ef-aa2d-0286e067cdfc" title="Permalink to this equation">¶</a></span>\[\begin{align}
 f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y \in \mathcal{Y}
 \end{align}\]</div>
 <p>for any constant <span class="math notranslate nohighlight">\(c\)</span>.</p>
@@ -602,7 +608,7 @@ f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y 
     <div class='prev-next-bottom'>
         
     <a class='left-prev' id="prev-link" href="adaptive_LS_PCM.html" title="previous page">Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)</a>
-    <a class='right-next' id="next-link" href="PCM.html" title="next page">PCM</a>
+    <a class='right-next' id="next-link" href="PCM.html" title="next page">Estimating MI by Probabilistic Classifier Method (PCM)</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">
