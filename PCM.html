@@ -141,11 +141,6 @@ commentsRunWhenDOMLoaded(addUtterances);
    Estimating MI by Probabilistic Classifier Method (PCM)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="#setup">
-   Setup
-  </a>
- </li>
 </ul>
 
 </nav> <!-- To handle the deprecated key -->
@@ -247,32 +242,25 @@ commentsRunWhenDOMLoaded(addUtterances);
         </div>
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   Estimating MI by Probabilistic Classifier Method (PCM)
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#setup">
    Setup
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#model">
-     Model
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#training">
-     Training
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mi-estimates">
-     MI estimates
-    </a>
-   </li>
-  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model">
+   Model
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#training">
+   Training
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mi-estimates">
+   MI estimates
+  </a>
  </li>
 </ul>
 
@@ -287,9 +275,8 @@ commentsRunWhenDOMLoaded(addUtterances);
                 
   <div class="section" id="estimating-mi-by-probabilistic-classifier-method-pcm">
 <h1>Estimating MI by Probabilistic Classifier Method (PCM)<a class="headerlink" href="#estimating-mi-by-probabilistic-classifier-method-pcm" title="Permalink to this headline">¶</a></h1>
-</div>
 <div class="section" id="setup">
-<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
 <p>The following cell imports the necessary packages:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -374,22 +361,23 @@ commentsRunWhenDOMLoaded(addUtterances);
 </div>
 </div>
 </div>
+</div>
 <div class="section" id="model">
 <h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p>Define the function <code class="docutils literal notranslate"><span class="pre">generate_data</span></code> for generating Gaussian or Mixed Gaussian distributions.</p>
 <ul class="simple">
-<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-6260e0d6-66be-4dee-bf55-4dd37f86cf0f">
-<span class="eqno">(11)<a class="headerlink" href="#equation-6260e0d6-66be-4dee-bf55-4dd37f86cf0f" title="Permalink to this equation">¶</a></span>\[\begin{align} 
-p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
+<div class="amsmath math notranslate nohighlight" id="equation-1cca0998-41c2-420f-bbd6-7a7cb1e38c9e">
+<span class="eqno">(11)<a class="headerlink" href="#equation-1cca0998-41c2-420f-bbd6-7a7cb1e38c9e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 \end{align}\]</div>
 <ul class="simple">
-<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-f5b4ea38-eb70-461d-9a3c-1ae2008f1d0e">
-<span class="eqno">(12)<a class="headerlink" href="#equation-f5b4ea38-eb70-461d-9a3c-1ae2008f1d0e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
- p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
+<div class="amsmath math notranslate nohighlight" id="equation-ee63f8a7-0186-448b-acd4-7354bf91dcf2">
+<span class="eqno">(12)<a class="headerlink" href="#equation-ee63f8a7-0186-448b-acd4-7354bf91dcf2" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+ p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
  \end{align}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -466,7 +454,7 @@ p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 
 </div>
 </div>
 </div>
-<p>The neural network <code class="docutils literal notranslate"><span class="pre">discriminator</span></code> below implements and outputs <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}(1|x,y)\)</span> before clipping:</p>
+<p>The neural network <code class="docutils literal notranslate"><span class="pre">discriminator</span></code> below implements and outputs <span class="math notranslate nohighlight">\(p_{{C} | \tilde{X}\tilde{Y}}(1|x,y)\)</span> before clipping:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
@@ -484,16 +472,16 @@ p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>The estimate of MI given by Probabilistic Classifier Method (PCM) is as follows:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f0d4b5c9-cdbc-4049-a61d-a41698d60ace">
-<span class="eqno">(13)<a class="headerlink" href="#equation-f0d4b5c9-cdbc-4049-a61d-a41698d60ace" title="Permalink to this equation">¶</a></span>\[\begin{align}
-I({\rm X, \rm Y}) = \mathbb{E} \left[ \ln r({\rm X, Y}) \right],
+<div class="amsmath math notranslate nohighlight" id="equation-495a77a1-cfae-4fb0-a4ca-ad40c885a6c8">
+<span class="eqno">(13)<a class="headerlink" href="#equation-495a77a1-cfae-4fb0-a4ca-ad40c885a6c8" title="Permalink to this equation">¶</a></span>\[\begin{align}
+I(X, Y) = E \left[ \ln r(X, Y) \right],
 \end{align}\]</div>
 <p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b965bfd7-357b-42f0-8caa-be8f8adb3ad1">
-<span class="eqno">(14)<a class="headerlink" href="#equation-b965bfd7-357b-42f0-8caa-be8f8adb3ad1" title="Permalink to this equation">¶</a></span>\[\begin{align}
-r({\rm X, Y}) := \frac{p_{\rm C}(0)}{p_{\rm C}(1)} \cdot \frac{p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}} (1|x,y)}{p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}} (0|x,y)}.
+<div class="amsmath math notranslate nohighlight" id="equation-b71eecc7-8954-4994-a221-01b27248158d">
+<span class="eqno">(14)<a class="headerlink" href="#equation-b71eecc7-8954-4994-a221-01b27248158d" title="Permalink to this equation">¶</a></span>\[\begin{align}
+r(X, Y) := \frac{p_{C}(0)}{p_{C}(1)} \cdot \frac{p_{{C} | \tilde{X}\tilde{Y}} (1|x,y)}{p_{{C} | \tilde{X}\tilde{Y}} (0|x,y)}.
 \end{align}\]</div>
-<p>To obtain MI estimate of given samples by Probabilistic Classifier Method (PCM), we train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> to implement <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}(1|x,y)\)</span> by minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}\)</span>.</p>
+<p>To obtain MI estimate of given samples by Probabilistic Classifier Method (PCM), we train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> to implement <span class="math notranslate nohighlight">\(p_{{C} | \tilde{X}\tilde{Y}}(1|x,y)\)</span> by minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{C} | \tilde{X}\tilde{Y}}\)</span>.</p>
 <p>The output of the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> may be clipped to a certain range before used for calculating MI estimate.</p>
 <p>The following cell train the neural network using the data samples.</p>
 <div class="cell docutils container">
@@ -629,7 +617,7 @@ Iternation: 39500, loss: 0.003989, mi_est: 6.829446
 </div>
 </div>
 </div>
-<p>Plot the MI estimation curve against the training iteration, togeter the ground truth.</p>
+<p>Plot the MI estimation curve against the training iteration, together the ground truth.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;MI estimate&#39;</span><span class="p">)</span>
@@ -646,7 +634,7 @@ Iternation: 39500, loss: 0.003989, mi_est: 6.829446
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x22e97c8e908&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x14f8dd562c8&gt;
 </pre></div>
 </div>
 <img alt="_images/PCM_30_1.svg" src="_images/PCM_30_1.svg" /></div>

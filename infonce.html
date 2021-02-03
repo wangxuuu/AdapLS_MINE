@@ -142,11 +142,6 @@ commentsRunWhenDOMLoaded(addUtterances);
    Estimating MI by Probabilistic Classifier Method (PCM)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="PCM.html#setup">
-   Setup
-  </a>
- </li>
 </ul>
 
 </nav> <!-- To handle the deprecated key -->
@@ -367,18 +362,18 @@ commentsRunWhenDOMLoaded(addUtterances);
 <h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p>Define the function <code class="docutils literal notranslate"><span class="pre">generate_data</span></code> for generating Gaussian or Mixed Gaussian distributions.</p>
 <ul class="simple">
-<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-55f20ff3-c55d-47bb-a74f-1ac225e3e9be">
-<span class="eqno">(6)<a class="headerlink" href="#equation-55f20ff3-c55d-47bb-a74f-1ac225e3e9be" title="Permalink to this equation">¶</a></span>\[\begin{align}
-p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right)
+<div class="amsmath math notranslate nohighlight" id="equation-09fbfc22-6006-4a82-8322-73fb5c940834">
+<span class="eqno">(6)<a class="headerlink" href="#equation-09fbfc22-6006-4a82-8322-73fb5c940834" title="Permalink to this equation">¶</a></span>\[\begin{align}
+p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
 <ul class="simple">
-<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-49b6f33e-9594-423c-96e5-3e804ed10c8e">
-<span class="eqno">(7)<a class="headerlink" href="#equation-49b6f33e-9594-423c-96e5-3e804ed10c8e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
-p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
+<div class="amsmath math notranslate nohighlight" id="equation-eebac61e-f51e-42c6-8d2b-a0a683b8208e">
+<span class="eqno">(7)<a class="headerlink" href="#equation-eebac61e-f51e-42c6-8d2b-a0a683b8208e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
 <div class="cell docutils container">
@@ -458,8 +453,8 @@ p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begi
 </div>
 </div>
 <p>The function <code class="docutils literal notranslate"><span class="pre">infonce_bound</span></code> below returns the empirical estimate of the following infoNCE lower bound on the mutual information <span class="math notranslate nohighlight">\(I(X\wedge Y)\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-da0f6d6b-25f1-451e-8dd4-fdaa70c8e106">
-<span class="eqno">(8)<a class="headerlink" href="#equation-da0f6d6b-25f1-451e-8dd4-fdaa70c8e106" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-e5df624a-f963-41c9-89d2-668c3e71b716">
+<span class="eqno">(8)<a class="headerlink" href="#equation-e5df624a-f963-41c9-89d2-668c3e71b716" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, Y')} \right| X \right]} \right] \leq I(X\wedge Y) 
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(f: \mathcal{X}\times \mathcal{Y}\to \mathbb{R}\)</span> is a function to be implemented by a neural network, and <span class="math notranslate nohighlight">\(p_{Y'|X,Y}(y'|x,y)=p_{Y}(y)\)</span>, i.e., <span class="math notranslate nohighlight">\(Y'\)</span> is identically distributed as <span class="math notranslate nohighlight">\(Y\)</span> and independent of <span class="math notranslate nohighlight">\((X,Y)\)</span>.</p>
@@ -498,13 +493,13 @@ I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, 
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>Since maximizing the infoNCE bound over <span class="math notranslate nohighlight">\(f\)</span> attains the mutual information</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f8ef66d5-4128-4458-b80d-21f07c7f9e41">
-<span class="eqno">(9)<a class="headerlink" href="#equation-f8ef66d5-4128-4458-b80d-21f07c7f9e41" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-0419187e-9d93-4c0a-ae4d-e34bb342b657">
+<span class="eqno">(9)<a class="headerlink" href="#equation-0419187e-9d93-4c0a-ae4d-e34bb342b657" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X\wedge Y) = \sup_{f} I_{\text{infoNCE}}(f),
 \end{align}\]</div>
 <p>we train the neural network to minimize the loss <span class="math notranslate nohighlight">\(-I_{\text{infoNCE}}(f)\)</span>. The optimal solution <span class="math notranslate nohighlight">\(f\)</span> satisfies</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8e87c742-d557-49ef-aa2d-0286e067cdfc">
-<span class="eqno">(10)<a class="headerlink" href="#equation-8e87c742-d557-49ef-aa2d-0286e067cdfc" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-378134cc-05fc-449a-b16b-4484318febc5">
+<span class="eqno">(10)<a class="headerlink" href="#equation-378134cc-05fc-449a-b16b-4484318febc5" title="Permalink to this equation">¶</a></span>\[\begin{align}
 f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y \in \mathcal{Y}
 \end{align}\]</div>
 <p>for any constant <span class="math notranslate nohighlight">\(c\)</span>.</p>

@@ -142,11 +142,6 @@ commentsRunWhenDOMLoaded(addUtterances);
    Estimating MI by Probabilistic Classifier Method (PCM)
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="PCM.html#setup">
-   Setup
-  </a>
- </li>
 </ul>
 
 </nav> <!-- To handle the deprecated key -->
@@ -369,18 +364,18 @@ commentsRunWhenDOMLoaded(addUtterances);
 <h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p>Define the function <code class="docutils literal notranslate"><span class="pre">generate_data</span></code> for generating Gaussian or Mixed Gaussian distributions.</p>
 <ul class="simple">
-<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-23536d53-1fe7-4cfa-bba7-9ef61fa5ba61">
-<span class="eqno">(1)<a class="headerlink" href="#equation-23536d53-1fe7-4cfa-bba7-9ef61fa5ba61" title="Permalink to this equation">¶</a></span>\[\begin{align} 
-p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
+<div class="amsmath math notranslate nohighlight" id="equation-6c7979e3-5252-4daa-b346-d60426db4b63">
+<span class="eqno">(1)<a class="headerlink" href="#equation-6c7979e3-5252-4daa-b346-d60426db4b63" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 \end{align}\]</div>
 <ul class="simple">
-<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({\rm X}\)</span> and <span class="math notranslate nohighlight">\({\rm Y}\)</span> are distributed as</p></li>
+<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-53b5b854-6ef4-42b2-81b5-c69f5fbe0d7d">
-<span class="eqno">(2)<a class="headerlink" href="#equation-53b5b854-6ef4-42b2-81b5-c69f5fbe0d7d" title="Permalink to this equation">¶</a></span>\[\begin{align} 
- p_{\rm X \rm Y} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
+<div class="amsmath math notranslate nohighlight" id="equation-ebd45f70-1776-490f-a3cd-d17c01daa71d">
+<span class="eqno">(2)<a class="headerlink" href="#equation-ebd45f70-1776-490f-a3cd-d17c01daa71d" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+ p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
  \end{align}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -478,16 +473,16 @@ p_{\rm X \rm Y} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 
 </div>
 </div>
 <p>The function <code class="docutils literal notranslate"><span class="pre">mi_estimate</span></code> below returns the empirical estimate of MI given by Probabilistic Classifier Method (PCM):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-aacc610e-3296-41da-959f-73d8be9b68fd">
-<span class="eqno">(3)<a class="headerlink" href="#equation-aacc610e-3296-41da-959f-73d8be9b68fd" title="Permalink to this equation">¶</a></span>\[\begin{align}
-I({\rm X, \rm Y}) = \mathbb{E} \left[ \ln r({\rm X, Y}) \right],
+<div class="amsmath math notranslate nohighlight" id="equation-04e97af4-62aa-4f8a-91b7-d3844fd8a19d">
+<span class="eqno">(3)<a class="headerlink" href="#equation-04e97af4-62aa-4f8a-91b7-d3844fd8a19d" title="Permalink to this equation">¶</a></span>\[\begin{align}
+I(X, Y) = E \left[ \ln r(X, Y) \right],
 \end{align}\]</div>
 <p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-dd78351c-ce40-4a96-a56c-e8a6825631ab">
-<span class="eqno">(4)<a class="headerlink" href="#equation-dd78351c-ce40-4a96-a56c-e8a6825631ab" title="Permalink to this equation">¶</a></span>\[\begin{align}
-r({\rm X, Y}) := \frac{p_{\rm C}(0)}{p_{\rm C}(1)} \cdot \frac{p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}} (1|x,y)}{p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}} (0|x,y)},
+<div class="amsmath math notranslate nohighlight" id="equation-27c06254-ce3e-4370-9372-0f51520793e1">
+<span class="eqno">(4)<a class="headerlink" href="#equation-27c06254-ce3e-4370-9372-0f51520793e1" title="Permalink to this equation">¶</a></span>\[\begin{align}
+r(X, Y) := \frac{p_{C}(0)}{p_{C}(1)} \cdot \frac{p_{{C} | {\tilde{X}}{\tilde{Y}}} (1|x,y)}{p_{{C} | {\tilde{X}}{\tilde{Y}}} (0|x,y)},
 \end{align}\]</div>
-<p>and <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}(1|x,y)\)</span>
+<p>and <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span>
 is implemented by a neural network and may be clipped to a certain range before used for calculating MI estimation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -512,7 +507,7 @@ is implemented by a neural network and may be clipped to a certain range before 
 </div>
 </div>
 </div>
-<p>The neural network <code class="docutils literal notranslate"><span class="pre">discriminator</span></code> below implements and outputs <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}(1|x,y)\)</span> before clipping:</p>
+<p>The neural network <code class="docutils literal notranslate"><span class="pre">discriminator</span></code> below implements and outputs <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span> before clipping:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
@@ -530,27 +525,27 @@ is implemented by a neural network and may be clipped to a certain range before 
 </div>
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
-<p>We want to obtain <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}(1|x,y)\)</span> by a neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>.</p>
-<p>To train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>, instead of minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}\)</span>, we propose minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to the distribution</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e7bd8ae0-0a20-403c-9635-f8be95e893f2">
-<span class="eqno">(5)<a class="headerlink" href="#equation-e7bd8ae0-0a20-403c-9635-f8be95e893f2" title="Permalink to this equation">¶</a></span>\[\begin{align}
-p^{'}_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}} := (1-\alpha) \cdot p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}} + \alpha \cdot p_{\rm U},
+<p>We want to obtain <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span> by a neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>.</p>
+<p>To train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>, instead of minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>, we propose minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to the distribution</p>
+<div class="amsmath math notranslate nohighlight" id="equation-af18a26c-8c85-4f97-b918-d2ce64dadd7f">
+<span class="eqno">(5)<a class="headerlink" href="#equation-af18a26c-8c85-4f97-b918-d2ce64dadd7f" title="Permalink to this equation">¶</a></span>\[\begin{align}
+p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}} := (1-\alpha) \cdot p_{{C} | {\tilde{X}}{\tilde{Y}}} + \alpha \cdot p_{U},
 \end{align}\]</div>
-<p>where <span class="math notranslate nohighlight">\(p_{\rm U} := \frac{1}{2}\)</span> is the uniform over the labels <span class="math notranslate nohighlight">\(\{0, 1\}\)</span> (in fact <span class="math notranslate nohighlight">\(p_{\rm U}\)</span> can be any distribution over labels), and <span class="math notranslate nohighlight">\(\alpha\)</span> is the smoothing weight.</p>
+<p>where <span class="math notranslate nohighlight">\(p_{U} := \frac{1}{2}\)</span> is the uniform over the labels <span class="math notranslate nohighlight">\(\{0, 1\}\)</span> (in fact <span class="math notranslate nohighlight">\(p_{U}\)</span> can be any distribution over labels), and <span class="math notranslate nohighlight">\(\alpha\)</span> is the smoothing weight.</p>
 <p>Here, we use adaptive smoothing weight <span class="math notranslate nohighlight">\(\alpha\)</span> which will be given by function <code class="docutils literal notranslate"><span class="pre">acti_func</span></code> called in the forward pass of the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>. The adaptive smoothing weight <span class="math notranslate nohighlight">\(\alpha\)</span> depends on the input sample and the neural network, and is defined as follows:</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{equation*}
 \alpha = \left\{
 	 \begin{array}{ll}
-	 -\frac{\alpha_{0}}{\tau}\hat{p}_{\theta}(1|\widetilde{\rm X},\widetilde{\rm Y})+\alpha_{0}, &amp;
-	 \hat{p}_{\theta}(1|\widetilde{\rm X},\widetilde{\rm Y})\in[0,\tau], \\
-	 0, &amp; \hat{p}_{\theta}(1|\widetilde{\rm X},\widetilde{\rm Y})\in(\tau,1-\tau), \\
-	 \frac{\alpha_{0}}{\tau}\hat{p}_{\theta}(1|\widetilde{\rm X},\widetilde{\rm Y})+\frac{\tau-1}{\tau}\alpha_{0}, &amp; \hat{p}_{\theta}(1|\widetilde{\rm X},\widetilde{\rm Y})\in[1-\tau,1],
+	 -\frac{\alpha_{0}}{\tau}\hat{p}_{\theta}(1|\tilde{X},\tilde{Y})+\alpha_{0}, &amp;
+	 \hat{p}_{\theta}(1|\tilde{X},\tilde{Y})\in[0,\tau], \\
+	 0, &amp; \hat{p}_{\theta}(1|\tilde{X},\tilde{Y})\in(\tau,1-\tau), \\
+	 \frac{\alpha_{0}}{\tau}\hat{p}_{\theta}(1|\tilde{X},\tilde{Y})+\frac{\tau-1}{\tau}\alpha_{0}, &amp; \hat{p}_{\theta}(1|\tilde{X},\tilde{Y})\in[1-\tau,1],
 	 \end{array}
 \right.
 \end{equation*}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\alpha_{0} \in [0, 1]\)</span> is the maximum regularization weight and <span class="math notranslate nohighlight">\(\tau \in (0, \frac{1}{2})\)</span> is the threshold to judge whether the classifier is starting to get overconfident.</p>
-<p>We train the neural network with adative smoothing weight and <span class="math notranslate nohighlight">\(p^{'}_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}\)</span>, while when we evaluate the MI estimate by the trained neural network, we use the function <code class="docutils literal notranslate"><span class="pre">mi_estimate</span></code> which is based on MI estimation by Probabilistic Classifier Method (PCM) method and uses <span class="math notranslate nohighlight">\(p_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}\)</span> instead of <span class="math notranslate nohighlight">\(p^{'}_{{\rm C} | {\rm \widetilde{X}}{\rm \widetilde{Y}}}\)</span>.</p>
+<p>We train the neural network with adative smoothing weight and <span class="math notranslate nohighlight">\(p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>, while when we evaluate the MI estimate by the trained neural network, we use the function <code class="docutils literal notranslate"><span class="pre">mi_estimate</span></code> which is based on MI estimation by Probabilistic Classifier Method (PCM) method and uses <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span> instead of <span class="math notranslate nohighlight">\(p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>.</p>
 <p>The following cell train the neural network using the data samples.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -685,7 +680,7 @@ Iternation: 39500, loss: 0.012341, mi_est: 6.442264
 </div>
 </div>
 </div>
-<p>Plot the MI estimation curve against the training iteration, togeter the ground truth.</p>
+<p>Plot the MI estimation curve against the training iteration, together the ground truth.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;MI estimate&#39;</span><span class="p">)</span>
