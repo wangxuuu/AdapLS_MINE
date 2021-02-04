@@ -11,7 +11,7 @@ To soften the classifier, we propose a novel scheme that smooths the label adapt
 
 The repository contains the implementation of the proposed adaptive label smoothing scheme. Experimental results on MNIST and CIFAR10 datasets confirmed that method yields better representation and achieves higher classification test accuracy among existing approaches in self-supervised representation learning. The results are reproducible using the jupyter notebooks in this repository:
 
-- adaptive_LS_PCM.ipynb: The proposed adaptive label smooth scheme.
+- AdapLS.ipynb: The proposed adaptive label smoothing classifier-based model.
 - PCM.ipynb: The probabilisitic classifier method.
 - InfoNCE.ipynb: The noise contrastive method.
 

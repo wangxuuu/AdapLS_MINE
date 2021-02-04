@@ -127,11 +127,6 @@ commentsRunWhenDOMLoaded(addUtterances);
 </ul>
 <ul class="current nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="adaptive_LS_PCM.html">
-   Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="infonce.html">
    Estimating MI by noise contrastive method (InfoNCE)
   </a>
@@ -330,9 +325,9 @@ commentsRunWhenDOMLoaded(addUtterances);
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--rho&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;coefficient of Gaussian&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clipping parameter&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--d&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;dimension of X &amp; Y&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--d&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;dimension of X &amp; Y&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--sample_size&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;sample size&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clipping parameter&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b1&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b2&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n_iters&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">40000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of epochs of training&quot;</span><span class="p">)</span>
@@ -368,15 +363,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="simple">
 <li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-1cca0998-41c2-420f-bbd6-7a7cb1e38c9e">
-<span class="eqno">(11)<a class="headerlink" href="#equation-1cca0998-41c2-420f-bbd6-7a7cb1e38c9e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-8ea7bb7d-e046-41e6-86c6-3c1476896531">
+<span class="eqno">(6)<a class="headerlink" href="#equation-8ea7bb7d-e046-41e6-86c6-3c1476896531" title="Permalink to this equation">¶</a></span>\[\begin{align} 
 p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 \end{align}\]</div>
 <ul class="simple">
 <li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-ee63f8a7-0186-448b-acd4-7354bf91dcf2">
-<span class="eqno">(12)<a class="headerlink" href="#equation-ee63f8a7-0186-448b-acd4-7354bf91dcf2" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-b4ce1825-04e6-4734-b584-e8335f3c655b">
+<span class="eqno">(7)<a class="headerlink" href="#equation-b4ce1825-04e6-4734-b584-e8335f3c655b" title="Permalink to this equation">¶</a></span>\[\begin{align} 
  p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
  \end{align}\]</div>
 <div class="cell docutils container">
@@ -472,13 +467,13 @@ p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rh
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>The estimate of MI given by Probabilistic Classifier Method (PCM) is as follows:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-495a77a1-cfae-4fb0-a4ca-ad40c885a6c8">
-<span class="eqno">(13)<a class="headerlink" href="#equation-495a77a1-cfae-4fb0-a4ca-ad40c885a6c8" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-d379a16e-7d2a-494d-96d5-153c52ebad64">
+<span class="eqno">(8)<a class="headerlink" href="#equation-d379a16e-7d2a-494d-96d5-153c52ebad64" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X, Y) = E \left[ \ln r(X, Y) \right],
 \end{align}\]</div>
 <p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b71eecc7-8954-4994-a221-01b27248158d">
-<span class="eqno">(14)<a class="headerlink" href="#equation-b71eecc7-8954-4994-a221-01b27248158d" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-9c2448c9-1680-49f3-8c1e-23d1234a101f">
+<span class="eqno">(9)<a class="headerlink" href="#equation-9c2448c9-1680-49f3-8c1e-23d1234a101f" title="Permalink to this equation">¶</a></span>\[\begin{align}
 r(X, Y) := \frac{p_{C}(0)}{p_{C}(1)} \cdot \frac{p_{{C} | \tilde{X}\tilde{Y}} (1|x,y)}{p_{{C} | \tilde{X}\tilde{Y}} (0|x,y)}.
 \end{align}\]</div>
 <p>To obtain MI estimate of given samples by Probabilistic Classifier Method (PCM), we train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> to implement <span class="math notranslate nohighlight">\(p_{{C} | \tilde{X}\tilde{Y}}(1|x,y)\)</span> by minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{C} | \tilde{X}\tilde{Y}}\)</span>.</p>
@@ -519,86 +514,86 @@ r(X, Y) := \frac{p_{C}(0)}{p_{C}(1)} \cdot \frac{p_{{C} | \tilde{X}\tilde{Y}} (1
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.692903, mi_est: -0.000002
-Iternation: 500, loss: 0.692608, mi_est: 0.002726
-Iternation: 1000, loss: 0.635445, mi_est: 0.148280
-Iternation: 1500, loss: 0.299852, mi_est: 1.174935
-Iternation: 2000, loss: 0.143050, mi_est: 2.219919
-Iternation: 2500, loss: 0.103378, mi_est: 2.733875
-Iternation: 3000, loss: 0.091387, mi_est: 3.228176
-Iternation: 3500, loss: 0.056432, mi_est: 3.634112
-Iternation: 4000, loss: 0.038668, mi_est: 4.072002
-Iternation: 4500, loss: 0.050784, mi_est: 4.207734
-Iternation: 5000, loss: 0.029355, mi_est: 4.492753
-Iternation: 5500, loss: 0.022303, mi_est: 4.607281
-Iternation: 6000, loss: 0.055420, mi_est: 4.959693
-Iternation: 6500, loss: 0.050318, mi_est: 4.856138
-Iternation: 7000, loss: 0.020848, mi_est: 5.077870
-Iternation: 7500, loss: 0.015665, mi_est: 5.386826
-Iternation: 8000, loss: 0.014158, mi_est: 5.755594
-Iternation: 8500, loss: 0.011996, mi_est: 5.956127
-Iternation: 9000, loss: 0.026169, mi_est: 5.967770
-Iternation: 9500, loss: 0.027170, mi_est: 5.870547
-Iternation: 10000, loss: 0.086753, mi_est: 6.206309
-Iternation: 10500, loss: 0.051873, mi_est: 6.279074
-Iternation: 11000, loss: 0.009612, mi_est: 6.118644
-Iternation: 11500, loss: 0.009356, mi_est: 6.256437
-Iternation: 12000, loss: 0.011510, mi_est: 6.508713
-Iternation: 12500, loss: 0.025007, mi_est: 6.299327
-Iternation: 13000, loss: 0.007864, mi_est: 6.423207
-Iternation: 13500, loss: 0.006110, mi_est: 6.681663
-Iternation: 14000, loss: 0.042824, mi_est: 6.331740
-Iternation: 14500, loss: 0.011410, mi_est: 7.007097
-Iternation: 15000, loss: 0.018732, mi_est: 6.604127
-Iternation: 15500, loss: 0.029624, mi_est: 6.835336
-Iternation: 16000, loss: 0.018285, mi_est: 6.689474
-Iternation: 16500, loss: 0.004577, mi_est: 6.984955
-Iternation: 17000, loss: 0.005857, mi_est: 6.907297
-Iternation: 17500, loss: 0.005653, mi_est: 6.833298
-Iternation: 18000, loss: 0.005856, mi_est: 6.600643
-Iternation: 18500, loss: 0.005954, mi_est: 6.797545
-Iternation: 19000, loss: 0.007424, mi_est: 6.776154
-Iternation: 19500, loss: 0.011392, mi_est: 6.575362
-Iternation: 20000, loss: 0.045293, mi_est: 6.918100
-Iternation: 20500, loss: 0.043234, mi_est: 7.085193
-Iternation: 21000, loss: 0.008660, mi_est: 6.528543
-Iternation: 21500, loss: 0.007355, mi_est: 7.067154
-Iternation: 22000, loss: 0.009373, mi_est: 7.207806
-Iternation: 22500, loss: 0.002335, mi_est: 6.797565
-Iternation: 23000, loss: 0.035590, mi_est: 7.109912
-Iternation: 23500, loss: 0.083463, mi_est: 6.821227
-Iternation: 24000, loss: 0.076835, mi_est: 6.869300
-Iternation: 24500, loss: 0.008577, mi_est: 7.098741
-Iternation: 25000, loss: 0.008873, mi_est: 6.872461
-Iternation: 25500, loss: 0.023189, mi_est: 6.886714
-Iternation: 26000, loss: 0.003979, mi_est: 6.427460
-Iternation: 26500, loss: 0.007302, mi_est: 7.331257
-Iternation: 27000, loss: 0.033924, mi_est: 7.338734
-Iternation: 27500, loss: 0.003199, mi_est: 6.880060
-Iternation: 28000, loss: 0.054390, mi_est: 6.973955
-Iternation: 28500, loss: 0.020107, mi_est: 7.529371
-Iternation: 29000, loss: 0.013181, mi_est: 7.099856
-Iternation: 29500, loss: 0.002642, mi_est: 7.351871
-Iternation: 30000, loss: 0.022427, mi_est: 7.214326
-Iternation: 30500, loss: 0.005311, mi_est: 7.300424
-Iternation: 31000, loss: 0.002734, mi_est: 7.260329
-Iternation: 31500, loss: 0.004284, mi_est: 7.079559
-Iternation: 32000, loss: 0.016236, mi_est: 6.945529
-Iternation: 32500, loss: 0.006264, mi_est: 7.031272
-Iternation: 33000, loss: 0.005546, mi_est: 7.052639
-Iternation: 33500, loss: 0.001974, mi_est: 7.037043
-Iternation: 34000, loss: 0.044599, mi_est: 7.523210
-Iternation: 34500, loss: 0.003495, mi_est: 7.566719
-Iternation: 35000, loss: 0.004942, mi_est: 6.914466
-Iternation: 35500, loss: 0.002108, mi_est: 7.391064
-Iternation: 36000, loss: 0.022611, mi_est: 7.079919
-Iternation: 36500, loss: 0.001826, mi_est: 7.328032
-Iternation: 37000, loss: 0.026736, mi_est: 6.945180
-Iternation: 37500, loss: 0.006149, mi_est: 6.342172
-Iternation: 38000, loss: 0.010529, mi_est: 7.406454
-Iternation: 38500, loss: 0.008112, mi_est: 6.766532
-Iternation: 39000, loss: 0.022742, mi_est: 7.363206
-Iternation: 39500, loss: 0.003989, mi_est: 6.829446
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.693209, mi_est: 0.000117
+Iternation: 500, loss: 0.693423, mi_est: 0.000689
+Iternation: 1000, loss: 0.653978, mi_est: 0.092381
+Iternation: 1500, loss: 0.405215, mi_est: 0.805298
+Iternation: 2000, loss: 0.255357, mi_est: 1.578081
+Iternation: 2500, loss: 0.158572, mi_est: 2.263664
+Iternation: 3000, loss: 0.154925, mi_est: 2.552694
+Iternation: 3500, loss: 0.113969, mi_est: 2.870689
+Iternation: 4000, loss: 0.070642, mi_est: 3.377664
+Iternation: 4500, loss: 0.098481, mi_est: 3.509004
+Iternation: 5000, loss: 0.101147, mi_est: 3.947737
+Iternation: 5500, loss: 0.074626, mi_est: 3.792786
+Iternation: 6000, loss: 0.097327, mi_est: 4.024866
+Iternation: 6500, loss: 0.064534, mi_est: 4.163417
+Iternation: 7000, loss: 0.075021, mi_est: 4.211025
+Iternation: 7500, loss: 0.101204, mi_est: 4.353551
+Iternation: 8000, loss: 0.073773, mi_est: 4.586388
+Iternation: 8500, loss: 0.065499, mi_est: 4.521900
+Iternation: 9000, loss: 0.088362, mi_est: 4.748448
+Iternation: 9500, loss: 0.048965, mi_est: 4.643247
+Iternation: 10000, loss: 0.045066, mi_est: 4.956887
+Iternation: 10500, loss: 0.049497, mi_est: 4.919677
+Iternation: 11000, loss: 0.053757, mi_est: 4.714737
+Iternation: 11500, loss: 0.050161, mi_est: 5.293475
+Iternation: 12000, loss: 0.050039, mi_est: 5.247628
+Iternation: 12500, loss: 0.073631, mi_est: 4.944173
+Iternation: 13000, loss: 0.078665, mi_est: 4.969130
+Iternation: 13500, loss: 0.044522, mi_est: 4.856450
+Iternation: 14000, loss: 0.078484, mi_est: 5.181298
+Iternation: 14500, loss: 0.071786, mi_est: 5.155531
+Iternation: 15000, loss: 0.066683, mi_est: 5.553062
+Iternation: 15500, loss: 0.066575, mi_est: 5.281417
+Iternation: 16000, loss: 0.067328, mi_est: 5.199108
+Iternation: 16500, loss: 0.091323, mi_est: 5.153232
+Iternation: 17000, loss: 0.130631, mi_est: 4.945910
+Iternation: 17500, loss: 0.086258, mi_est: 5.013367
+Iternation: 18000, loss: 0.054254, mi_est: 5.438312
+Iternation: 18500, loss: 0.087861, mi_est: 5.271624
+Iternation: 19000, loss: 0.057547, mi_est: 5.265980
+Iternation: 19500, loss: 0.057351, mi_est: 5.534029
+Iternation: 20000, loss: 0.042216, mi_est: 5.481342
+Iternation: 20500, loss: 0.080603, mi_est: 5.434614
+Iternation: 21000, loss: 0.056550, mi_est: 5.221516
+Iternation: 21500, loss: 0.094515, mi_est: 5.629001
+Iternation: 22000, loss: 0.081208, mi_est: 5.612077
+Iternation: 22500, loss: 0.051487, mi_est: 5.491879
+Iternation: 23000, loss: 0.064576, mi_est: 5.493663
+Iternation: 23500, loss: 0.066513, mi_est: 5.575809
+Iternation: 24000, loss: 0.033387, mi_est: 5.713889
+Iternation: 24500, loss: 0.048517, mi_est: 5.732147
+Iternation: 25000, loss: 0.042915, mi_est: 5.591043
+Iternation: 25500, loss: 0.050773, mi_est: 5.773353
+Iternation: 26000, loss: 0.047151, mi_est: 5.486770
+Iternation: 26500, loss: 0.022773, mi_est: 5.712837
+Iternation: 27000, loss: 0.027446, mi_est: 5.640997
+Iternation: 27500, loss: 0.094366, mi_est: 5.167398
+Iternation: 28000, loss: 0.102910, mi_est: 5.388769
+Iternation: 28500, loss: 0.102473, mi_est: 5.463453
+Iternation: 29000, loss: 0.066883, mi_est: 5.617982
+Iternation: 29500, loss: 0.048295, mi_est: 5.517110
+Iternation: 30000, loss: 0.107401, mi_est: 5.396926
+Iternation: 30500, loss: 0.056099, mi_est: 5.850293
+Iternation: 31000, loss: 0.027956, mi_est: 5.695985
+Iternation: 31500, loss: 0.045626, mi_est: 5.785635
+Iternation: 32000, loss: 0.039845, mi_est: 5.593102
+Iternation: 32500, loss: 0.067480, mi_est: 5.553375
+Iternation: 33000, loss: 0.065478, mi_est: 6.157937
+Iternation: 33500, loss: 0.052899, mi_est: 5.373985
+Iternation: 34000, loss: 0.045933, mi_est: 5.839620
+Iternation: 34500, loss: 0.048531, mi_est: 5.590698
+Iternation: 35000, loss: 0.097271, mi_est: 5.268178
+Iternation: 35500, loss: 0.091582, mi_est: 5.259988
+Iternation: 36000, loss: 0.067143, mi_est: 5.721847
+Iternation: 36500, loss: 0.032247, mi_est: 5.607935
+Iternation: 37000, loss: 0.047521, mi_est: 5.718722
+Iternation: 37500, loss: 0.049050, mi_est: 5.448004
+Iternation: 38000, loss: 0.064149, mi_est: 5.267500
+Iternation: 38500, loss: 0.093029, mi_est: 5.739810
+Iternation: 39000, loss: 0.065344, mi_est: 5.866292
+Iternation: 39500, loss: 0.037099, mi_est: 5.632623
 </pre></div>
 </div>
 </div>
@@ -634,7 +629,7 @@ Iternation: 39500, loss: 0.003989, mi_est: 6.829446
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x14f8dd562c8&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x19916d198c8&gt;
 </pre></div>
 </div>
 <img alt="_images/PCM_30_1.svg" src="_images/PCM_30_1.svg" /></div>

@@ -93,7 +93,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Estimating MI by Probabilistic Classifier Method (PCM)" href="PCM.html" />
-    <link rel="prev" title="Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)" href="adaptive_LS_PCM.html" />
+    <link rel="prev" title="Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation" href="README.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -127,11 +127,6 @@ commentsRunWhenDOMLoaded(addUtterances);
  </li>
 </ul>
 <ul class="current nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="adaptive_LS_PCM.html">
-   Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)
-  </a>
- </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Estimating MI by noise contrastive method (InfoNCE)
@@ -326,9 +321,9 @@ commentsRunWhenDOMLoaded(addUtterances);
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># arguments</span>
 <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--rho&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;coefficient of Gaussian&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clip the ratio&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--d&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;dimension of X &amp; Y&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--d&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;dimension of X &amp; Y&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--sample_size&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1600</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;sample size&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clipping parameter&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b1&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b2&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n_iters&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">40000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of epochs of training&quot;</span><span class="p">)</span>
@@ -364,15 +359,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="simple">
 <li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-09fbfc22-6006-4a82-8322-73fb5c940834">
-<span class="eqno">(6)<a class="headerlink" href="#equation-09fbfc22-6006-4a82-8322-73fb5c940834" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-d11ddc3d-98ce-43b0-b80c-be60c368059c">
+<span class="eqno">(1)<a class="headerlink" href="#equation-d11ddc3d-98ce-43b0-b80c-be60c368059c" title="Permalink to this equation">¶</a></span>\[\begin{align}
 p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
 <ul class="simple">
 <li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-eebac61e-f51e-42c6-8d2b-a0a683b8208e">
-<span class="eqno">(7)<a class="headerlink" href="#equation-eebac61e-f51e-42c6-8d2b-a0a683b8208e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-e76c6840-61d5-4824-a0df-a13742891495">
+<span class="eqno">(2)<a class="headerlink" href="#equation-e76c6840-61d5-4824-a0df-a13742891495" title="Permalink to this equation">¶</a></span>\[\begin{align} 
 p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
@@ -453,8 +448,8 @@ p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix
 </div>
 </div>
 <p>The function <code class="docutils literal notranslate"><span class="pre">infonce_bound</span></code> below returns the empirical estimate of the following infoNCE lower bound on the mutual information <span class="math notranslate nohighlight">\(I(X\wedge Y)\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e5df624a-f963-41c9-89d2-668c3e71b716">
-<span class="eqno">(8)<a class="headerlink" href="#equation-e5df624a-f963-41c9-89d2-668c3e71b716" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-9f2b84ac-0241-4fbf-948d-6869261a7235">
+<span class="eqno">(3)<a class="headerlink" href="#equation-9f2b84ac-0241-4fbf-948d-6869261a7235" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, Y')} \right| X \right]} \right] \leq I(X\wedge Y) 
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(f: \mathcal{X}\times \mathcal{Y}\to \mathbb{R}\)</span> is a function to be implemented by a neural network, and <span class="math notranslate nohighlight">\(p_{Y'|X,Y}(y'|x,y)=p_{Y}(y)\)</span>, i.e., <span class="math notranslate nohighlight">\(Y'\)</span> is identically distributed as <span class="math notranslate nohighlight">\(Y\)</span> and independent of <span class="math notranslate nohighlight">\((X,Y)\)</span>.</p>
@@ -493,13 +488,13 @@ I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, 
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>Since maximizing the infoNCE bound over <span class="math notranslate nohighlight">\(f\)</span> attains the mutual information</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0419187e-9d93-4c0a-ae4d-e34bb342b657">
-<span class="eqno">(9)<a class="headerlink" href="#equation-0419187e-9d93-4c0a-ae4d-e34bb342b657" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5d01ea57-2c33-457f-bec0-b491f9d716df">
+<span class="eqno">(4)<a class="headerlink" href="#equation-5d01ea57-2c33-457f-bec0-b491f9d716df" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X\wedge Y) = \sup_{f} I_{\text{infoNCE}}(f),
 \end{align}\]</div>
 <p>we train the neural network to minimize the loss <span class="math notranslate nohighlight">\(-I_{\text{infoNCE}}(f)\)</span>. The optimal solution <span class="math notranslate nohighlight">\(f\)</span> satisfies</p>
-<div class="amsmath math notranslate nohighlight" id="equation-378134cc-05fc-449a-b16b-4484318febc5">
-<span class="eqno">(10)<a class="headerlink" href="#equation-378134cc-05fc-449a-b16b-4484318febc5" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-f4ff0cb1-4c5f-4bec-bcb0-4638392abcc0">
+<span class="eqno">(5)<a class="headerlink" href="#equation-f4ff0cb1-4c5f-4bec-bcb0-4638392abcc0" title="Permalink to this equation">¶</a></span>\[\begin{align}
 f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y \in \mathcal{Y}
 \end{align}\]</div>
 <p>for any constant <span class="math notranslate nohighlight">\(c\)</span>.</p>
@@ -521,6 +516,90 @@ f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y 
     <span class="n">mi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0:
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iternation: </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.000026
+Iternation: 500, loss: 2.130766
+Iternation: 1000, loss: 3.442692
+Iternation: 1500, loss: 3.807239
+Iternation: 2000, loss: 3.916967
+Iternation: 2500, loss: 3.965796
+Iternation: 3000, loss: 3.939761
+Iternation: 3500, loss: 3.987280
+Iternation: 4000, loss: 3.910170
+Iternation: 4500, loss: 3.770389
+Iternation: 5000, loss: 3.808931
+Iternation: 5500, loss: 4.066084
+Iternation: 6000, loss: 3.766794
+Iternation: 6500, loss: 3.972610
+Iternation: 7000, loss: 3.883281
+Iternation: 7500, loss: 3.961443
+Iternation: 8000, loss: 3.902179
+Iternation: 8500, loss: 3.935131
+Iternation: 9000, loss: 3.999066
+Iternation: 9500, loss: 3.972041
+Iternation: 10000, loss: 3.958970
+Iternation: 10500, loss: 4.007897
+Iternation: 11000, loss: 3.906077
+Iternation: 11500, loss: 3.889313
+Iternation: 12000, loss: 3.744153
+Iternation: 12500, loss: 3.793502
+Iternation: 13000, loss: 3.795141
+Iternation: 13500, loss: 3.973289
+Iternation: 14000, loss: 3.919462
+Iternation: 14500, loss: 4.033025
+Iternation: 15000, loss: 3.983328
+Iternation: 15500, loss: 4.020015
+Iternation: 16000, loss: 4.092463
+Iternation: 16500, loss: 3.628473
+Iternation: 17000, loss: 3.913105
+Iternation: 17500, loss: 4.049815
+Iternation: 18000, loss: 3.973373
+Iternation: 18500, loss: 4.042896
+Iternation: 19000, loss: 3.941860
+Iternation: 19500, loss: 3.893381
+Iternation: 20000, loss: 4.089736
+Iternation: 20500, loss: 3.909733
+Iternation: 21000, loss: 3.893875
+Iternation: 21500, loss: 3.875880
+Iternation: 22000, loss: 4.040198
+Iternation: 22500, loss: 4.120422
+Iternation: 23000, loss: 3.764750
+Iternation: 23500, loss: 3.901599
+Iternation: 24000, loss: 4.099719
+Iternation: 24500, loss: 3.951578
+Iternation: 25000, loss: 3.773704
+Iternation: 25500, loss: 3.979806
+Iternation: 26000, loss: 4.077291
+Iternation: 26500, loss: 3.884757
+Iternation: 27000, loss: 3.970957
+Iternation: 27500, loss: 3.806394
+Iternation: 28000, loss: 3.966305
+Iternation: 28500, loss: 4.004156
+Iternation: 29000, loss: 3.926635
+Iternation: 29500, loss: 4.095171
+Iternation: 30000, loss: 3.927404
+Iternation: 30500, loss: 3.833755
+Iternation: 31000, loss: 3.884020
+Iternation: 31500, loss: 3.810914
+Iternation: 32000, loss: 3.864093
+Iternation: 32500, loss: 3.942296
+Iternation: 33000, loss: 4.091679
+Iternation: 33500, loss: 3.940437
+Iternation: 34000, loss: 4.007019
+Iternation: 34500, loss: 4.048717
+Iternation: 35000, loss: 4.130895
+Iternation: 35500, loss: 4.085101
+Iternation: 36000, loss: 3.999090
+Iternation: 36500, loss: 4.004892
+Iternation: 37000, loss: 4.010544
+Iternation: 37500, loss: 3.997561
+Iternation: 38000, loss: 3.988711
+Iternation: 38500, loss: 3.917804
+Iternation: 39000, loss: 4.029153
+Iternation: 39500, loss: 3.845955
 </pre></div>
 </div>
 </div>
@@ -558,7 +637,7 @@ f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x2575fe05c88&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x18a6fcbce48&gt;
 </pre></div>
 </div>
 <img alt="_images/infonce_31_1.svg" src="_images/infonce_31_1.svg" /></div>
@@ -602,7 +681,7 @@ f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y 
     
     <div class='prev-next-bottom'>
         
-    <a class='left-prev' id="prev-link" href="adaptive_LS_PCM.html" title="previous page">Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)</a>
+    <a class='left-prev' id="prev-link" href="README.html" title="previous page">Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation</a>
     <a class='right-next' id="next-link" href="PCM.html" title="next page">Estimating MI by Probabilistic Classifier Method (PCM)</a>
 
     </div>

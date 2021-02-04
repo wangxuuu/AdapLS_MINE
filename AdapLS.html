@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)</title>
+    <title>Estimating MI by the proposed adaptive label smoothing classifier-based model (AdapLS)</title>
     
   <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
 
@@ -92,8 +92,6 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Estimating MI by noise contrastive method (InfoNCE)" href="infonce.html" />
-    <link rel="prev" title="Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation" href="README.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -126,12 +124,7 @@ commentsRunWhenDOMLoaded(addUtterances);
   </a>
  </li>
 </ul>
-<ul class="current nav sidenav_l1">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)
-  </a>
- </li>
+<ul class="nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="infonce.html">
    Estimating MI by noise contrastive method (InfoNCE)
@@ -182,7 +175,7 @@ commentsRunWhenDOMLoaded(addUtterances);
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/adaptive_LS_PCM.ipynb"><button type="button"
+        <a class="dropdown-buttons" href="_sources/AdapLS.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
@@ -207,21 +200,21 @@ commentsRunWhenDOMLoaded(addUtterances);
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/ccha23/binder/master?urlpath=git-pull?repo%3Dhttps%3A%2F%2Fgithub.com%2Fwangxuuu%2FAdapLS_MINE%26urlpath%3Dtree%2FAdapLS_MINE%2Fadaptive_LS_PCM.ipynb%26branch%3Dmain"><button type="button"
+        <a class="binder-button" href="https://mybinder.org/v2/gh/ccha23/binder/master?urlpath=git-pull?repo%3Dhttps%3A%2F%2Fgithub.com%2Fwangxuuu%2FAdapLS_MINE%26urlpath%3Dtree%2FAdapLS_MINE%2FAdapLS.ipynb%26branch%3Dmain"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
                 data-placement="left"><img class="binder-button-logo"
                     src="_static/images/logo_binder.svg"
                     alt="Interact on binder">Binder</button></a>
         
         
-        <a class="jupyterhub-button" href="https://ltjh.cs.cityu.edu.hk/hub/user-redirect/git-pull?repo=https://github.com/wangxuuu/AdapLS_MINE&urlpath=tree/AdapLS_MINE/adaptive_LS_PCM.ipynb&branch=main"><button type="button"
+        <a class="jupyterhub-button" href="https://ltjh.cs.cityu.edu.hk/hub/user-redirect/git-pull?repo=https://github.com/wangxuuu/AdapLS_MINE&urlpath=tree/AdapLS_MINE/AdapLS.ipynb&branch=main"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch JupyterHub" data-toggle="tooltip"
                 data-placement="left"><img class="jupyterhub-button-logo"
                     src="_static/images/logo_jupyterhub.svg"
                     alt="Interact on JupyterHub">JupyterHub</button></a>
         
         
-        <a class="colab-button" href="https://colab.research.google.com/github/wangxuuu/AdapLS_MINE/blob/main/adaptive_LS_PCM.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
+        <a class="colab-button" href="https://colab.research.google.com/github/wangxuuu/AdapLS_MINE/blob/main/AdapLS.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
                 title="Launch Colab" data-toggle="tooltip" data-placement="left"><img class="colab-button-logo"
                     src="_static/images/logo_colab.png"
                     alt="Interact on Colab">Colab</button></a>
@@ -274,8 +267,8 @@ commentsRunWhenDOMLoaded(addUtterances);
         
               <div>
                 
-  <div class="section" id="estimating-mi-by-the-proposed-adaptive-label-smooth-scheme-adaptive-ls-pcm">
-<h1>Estimating MI by the proposed adaptive label smooth scheme (adaptive_LS_PCM)<a class="headerlink" href="#estimating-mi-by-the-proposed-adaptive-label-smooth-scheme-adaptive-ls-pcm" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="estimating-mi-by-the-proposed-adaptive-label-smoothing-classifier-based-model-adapls">
+<h1>Estimating MI by the proposed  adaptive  label  smoothing classifier-based model (AdapLS)<a class="headerlink" href="#estimating-mi-by-the-proposed-adaptive-label-smoothing-classifier-based-model-adapls" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
 <p>The following cell imports the necessary packages:</p>
@@ -328,9 +321,9 @@ commentsRunWhenDOMLoaded(addUtterances);
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--rho&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;coefficient of Gaussian&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clip the ratio&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--d&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;dimension of X &amp; Y&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--d&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;dimension of X &amp; Y&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--sample_size&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;sample size&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clipping parameter&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b1&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b2&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n_iters&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">40000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of epochs of training&quot;</span><span class="p">)</span>
@@ -345,7 +338,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <span class="c1"># opt = parser.parse_args()</span>
 <span class="n">opt</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
 <span class="c1"># adaptive LS parameters</span>
-<span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="mf">1e-8</span>  <span class="c1"># a is \alpha_0, b is \tau and c is 1-\tau in the paper</span>
 </pre></div>
 </div>
 </div>
@@ -366,15 +359,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="simple">
 <li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-6c7979e3-5252-4daa-b346-d60426db4b63">
-<span class="eqno">(1)<a class="headerlink" href="#equation-6c7979e3-5252-4daa-b346-d60426db4b63" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-a6b86dfb-9373-4df5-80c2-6154d93a58eb">
+<span class="eqno">()<a class="headerlink" href="#equation-a6b86dfb-9373-4df5-80c2-6154d93a58eb" title="Permalink to this equation">¶</a></span>\[\begin{align} 
 p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 \end{align}\]</div>
 <ul class="simple">
 <li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-ebd45f70-1776-490f-a3cd-d17c01daa71d">
-<span class="eqno">(2)<a class="headerlink" href="#equation-ebd45f70-1776-490f-a3cd-d17c01daa71d" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-627e96b3-70f5-4fc6-b30f-53f18f53cda7">
+<span class="eqno">()<a class="headerlink" href="#equation-627e96b3-70f5-4fc6-b30f-53f18f53cda7" title="Permalink to this equation">¶</a></span>\[\begin{align} 
  p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
  \end{align}\]</div>
 <div class="cell docutils container">
@@ -418,11 +411,10 @@ p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rh
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">acti_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-    <span class="c1"># y: a</span>
-    <span class="c1"># x: 0 b c 1</span>
+    <span class="c1"># a is \alpha_0, b is \tau and c is 1-\tau in the paper</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">x_cpu</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
-    <span class="n">alpha</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_cpu</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">b</span><span class="p">)]</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_cpu</span><span class="o">&lt;=</span><span class="n">b</span><span class="p">)]</span><span class="o">/</span><span class="n">b</span> <span class="o">+</span> <span class="n">a</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_cpu</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">b</span><span class="p">)]</span> <span class="o">=</span> <span class="o">-</span> <span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_cpu</span><span class="o">&lt;=</span><span class="n">b</span><span class="p">)]</span><span class="o">/</span><span class="n">b</span> <span class="o">+</span> <span class="n">a</span>
     <span class="n">alpha</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">x_cpu</span><span class="o">&gt;</span><span class="n">b</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x_cpu</span><span class="o">&lt;</span><span class="n">c</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">alpha</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_cpu</span><span class="o">&gt;=</span><span class="n">c</span><span class="p">)]</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_cpu</span><span class="o">&gt;=</span><span class="n">c</span><span class="p">)]</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">a</span><span class="o">*</span><span class="n">c</span><span class="o">/</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">alpha</span>
@@ -473,13 +465,13 @@ p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rh
 </div>
 </div>
 <p>The function <code class="docutils literal notranslate"><span class="pre">mi_estimate</span></code> below returns the empirical estimate of MI given by Probabilistic Classifier Method (PCM):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-04e97af4-62aa-4f8a-91b7-d3844fd8a19d">
-<span class="eqno">(3)<a class="headerlink" href="#equation-04e97af4-62aa-4f8a-91b7-d3844fd8a19d" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-d0d8206b-b2f8-4059-99b1-58376225ec34">
+<span class="eqno">()<a class="headerlink" href="#equation-d0d8206b-b2f8-4059-99b1-58376225ec34" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X, Y) = E \left[ \ln r(X, Y) \right],
 \end{align}\]</div>
 <p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-27c06254-ce3e-4370-9372-0f51520793e1">
-<span class="eqno">(4)<a class="headerlink" href="#equation-27c06254-ce3e-4370-9372-0f51520793e1" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-42c00973-64d1-430b-80eb-d804a6a70ac9">
+<span class="eqno">()<a class="headerlink" href="#equation-42c00973-64d1-430b-80eb-d804a6a70ac9" title="Permalink to this equation">¶</a></span>\[\begin{align}
 r(X, Y) := \frac{p_{C}(0)}{p_{C}(1)} \cdot \frac{p_{{C} | {\tilde{X}}{\tilde{Y}}} (1|x,y)}{p_{{C} | {\tilde{X}}{\tilde{Y}}} (0|x,y)},
 \end{align}\]</div>
 <p>and <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span>
@@ -527,8 +519,8 @@ is implemented by a neural network and may be clipped to a certain range before 
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>We want to obtain <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span> by a neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>.</p>
 <p>To train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>, instead of minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>, we propose minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to the distribution</p>
-<div class="amsmath math notranslate nohighlight" id="equation-af18a26c-8c85-4f97-b918-d2ce64dadd7f">
-<span class="eqno">(5)<a class="headerlink" href="#equation-af18a26c-8c85-4f97-b918-d2ce64dadd7f" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-385260a4-0588-4020-88dd-48344511f2cb">
+<span class="eqno">()<a class="headerlink" href="#equation-385260a4-0588-4020-88dd-48344511f2cb" title="Permalink to this equation">¶</a></span>\[\begin{align}
 p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}} := (1-\alpha) \cdot p_{{C} | {\tilde{X}}{\tilde{Y}}} + \alpha \cdot p_{U},
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(p_{U} := \frac{1}{2}\)</span> is the uniform over the labels <span class="math notranslate nohighlight">\(\{0, 1\}\)</span> (in fact <span class="math notranslate nohighlight">\(p_{U}\)</span> can be any distribution over labels), and <span class="math notranslate nohighlight">\(\alpha\)</span> is the smoothing weight.</p>
@@ -582,86 +574,86 @@ p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}} := (1-\alpha) \cdot p_{{C} | {\tilde{X}}{\t
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.693136, mi_est: -0.000016
-Iternation: 500, loss: 0.691974, mi_est: 0.003213
-Iternation: 1000, loss: 0.631890, mi_est: 0.133873
-Iternation: 1500, loss: 0.307794, mi_est: 1.162588
-Iternation: 2000, loss: 0.145452, mi_est: 2.139496
-Iternation: 2500, loss: 0.091745, mi_est: 2.718563
-Iternation: 3000, loss: 0.080250, mi_est: 3.199152
-Iternation: 3500, loss: 0.068637, mi_est: 3.609847
-Iternation: 4000, loss: 0.061169, mi_est: 3.916384
-Iternation: 4500, loss: 0.037997, mi_est: 4.222488
-Iternation: 5000, loss: 0.045291, mi_est: 4.595764
-Iternation: 5500, loss: 0.038717, mi_est: 4.474217
-Iternation: 6000, loss: 0.072938, mi_est: 4.844014
-Iternation: 6500, loss: 0.044309, mi_est: 4.871462
-Iternation: 7000, loss: 0.020542, mi_est: 5.137210
-Iternation: 7500, loss: 0.017981, mi_est: 5.601447
-Iternation: 8000, loss: 0.018866, mi_est: 5.143995
-Iternation: 8500, loss: 0.032327, mi_est: 5.529814
-Iternation: 9000, loss: 0.040613, mi_est: 5.623145
-Iternation: 9500, loss: 0.058287, mi_est: 5.737496
-Iternation: 10000, loss: 0.018793, mi_est: 5.764231
-Iternation: 10500, loss: 0.045940, mi_est: 5.845686
-Iternation: 11000, loss: 0.021475, mi_est: 5.768764
-Iternation: 11500, loss: 0.017921, mi_est: 6.088511
-Iternation: 12000, loss: 0.021369, mi_est: 5.882093
-Iternation: 12500, loss: 0.014568, mi_est: 6.146020
-Iternation: 13000, loss: 0.023253, mi_est: 5.799991
-Iternation: 13500, loss: 0.013383, mi_est: 6.368019
-Iternation: 14000, loss: 0.017404, mi_est: 6.159492
-Iternation: 14500, loss: 0.014174, mi_est: 6.244346
-Iternation: 15000, loss: 0.059751, mi_est: 6.429419
-Iternation: 15500, loss: 0.011531, mi_est: 6.573051
-Iternation: 16000, loss: 0.044864, mi_est: 5.993125
-Iternation: 16500, loss: 0.025419, mi_est: 6.553668
-Iternation: 17000, loss: 0.013635, mi_est: 6.168427
-Iternation: 17500, loss: 0.059517, mi_est: 6.401925
-Iternation: 18000, loss: 0.042255, mi_est: 6.652666
-Iternation: 18500, loss: 0.014170, mi_est: 6.193504
-Iternation: 19000, loss: 0.023048, mi_est: 6.275219
-Iternation: 19500, loss: 0.015006, mi_est: 6.680474
-Iternation: 20000, loss: 0.078617, mi_est: 6.682400
-Iternation: 20500, loss: 0.090415, mi_est: 6.755308
-Iternation: 21000, loss: 0.033898, mi_est: 6.645037
-Iternation: 21500, loss: 0.016127, mi_est: 6.478346
-Iternation: 22000, loss: 0.017510, mi_est: 6.916217
-Iternation: 22500, loss: 0.080833, mi_est: 6.575410
-Iternation: 23000, loss: 0.016758, mi_est: 6.691801
-Iternation: 23500, loss: 0.043587, mi_est: 6.665827
-Iternation: 24000, loss: 0.015912, mi_est: 6.517971
-Iternation: 24500, loss: 0.018499, mi_est: 6.721819
-Iternation: 25000, loss: 0.020125, mi_est: 6.426501
-Iternation: 25500, loss: 0.034658, mi_est: 6.228996
-Iternation: 26000, loss: 0.013930, mi_est: 6.787494
-Iternation: 26500, loss: 0.019002, mi_est: 6.448735
-Iternation: 27000, loss: 0.018283, mi_est: 6.253266
-Iternation: 27500, loss: 0.011797, mi_est: 7.013631
-Iternation: 28000, loss: 0.018515, mi_est: 6.340348
-Iternation: 28500, loss: 0.020762, mi_est: 6.711019
-Iternation: 29000, loss: 0.014100, mi_est: 6.612964
-Iternation: 29500, loss: 0.015653, mi_est: 6.326196
-Iternation: 30000, loss: 0.026642, mi_est: 6.372964
-Iternation: 30500, loss: 0.011752, mi_est: 6.521202
-Iternation: 31000, loss: 0.014383, mi_est: 6.559257
-Iternation: 31500, loss: 0.014777, mi_est: 6.814685
-Iternation: 32000, loss: 0.013307, mi_est: 6.214645
-Iternation: 32500, loss: 0.046996, mi_est: 6.667009
-Iternation: 33000, loss: 0.014075, mi_est: 6.341481
-Iternation: 33500, loss: 0.015470, mi_est: 6.520710
-Iternation: 34000, loss: 0.015974, mi_est: 6.050457
-Iternation: 34500, loss: 0.010716, mi_est: 6.903854
-Iternation: 35000, loss: 0.034014, mi_est: 6.214741
-Iternation: 35500, loss: 0.077531, mi_est: 5.971514
-Iternation: 36000, loss: 0.063985, mi_est: 6.488982
-Iternation: 36500, loss: 0.073274, mi_est: 6.445743
-Iternation: 37000, loss: 0.050309, mi_est: 6.500669
-Iternation: 37500, loss: 0.011486, mi_est: 6.707219
-Iternation: 38000, loss: 0.018732, mi_est: 6.898646
-Iternation: 38500, loss: 0.079404, mi_est: 6.617142
-Iternation: 39000, loss: 0.012888, mi_est: 6.472604
-Iternation: 39500, loss: 0.012341, mi_est: 6.442264
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.693174, mi_est: 0.000026
+Iternation: 500, loss: 0.691806, mi_est: 0.001975
+Iternation: 1000, loss: 0.660970, mi_est: 0.078561
+Iternation: 1500, loss: 0.402184, mi_est: 0.826262
+Iternation: 2000, loss: 0.253150, mi_est: 1.734758
+Iternation: 2500, loss: 0.174058, mi_est: 2.119874
+Iternation: 3000, loss: 0.168956, mi_est: 2.623216
+Iternation: 3500, loss: 0.155517, mi_est: 2.850455
+Iternation: 4000, loss: 0.172560, mi_est: 2.941039
+Iternation: 4500, loss: 0.096274, mi_est: 3.417146
+Iternation: 5000, loss: 0.086298, mi_est: 3.685113
+Iternation: 5500, loss: 0.066560, mi_est: 3.934117
+Iternation: 6000, loss: 0.097056, mi_est: 4.140526
+Iternation: 6500, loss: 0.061649, mi_est: 4.252849
+Iternation: 7000, loss: 0.078944, mi_est: 4.338461
+Iternation: 7500, loss: 0.083970, mi_est: 4.448709
+Iternation: 8000, loss: 0.117480, mi_est: 4.307809
+Iternation: 8500, loss: 0.109773, mi_est: 4.286031
+Iternation: 9000, loss: 0.101739, mi_est: 4.489611
+Iternation: 9500, loss: 0.089589, mi_est: 4.719651
+Iternation: 10000, loss: 0.073823, mi_est: 4.480484
+Iternation: 10500, loss: 0.117588, mi_est: 4.757344
+Iternation: 11000, loss: 0.097735, mi_est: 4.427690
+Iternation: 11500, loss: 0.076174, mi_est: 4.928258
+Iternation: 12000, loss: 0.071927, mi_est: 4.884167
+Iternation: 12500, loss: 0.110974, mi_est: 4.867202
+Iternation: 13000, loss: 0.108328, mi_est: 4.816600
+Iternation: 13500, loss: 0.092782, mi_est: 4.931309
+Iternation: 14000, loss: 0.124240, mi_est: 4.684674
+Iternation: 14500, loss: 0.062503, mi_est: 5.055434
+Iternation: 15000, loss: 0.113395, mi_est: 4.823802
+Iternation: 15500, loss: 0.096692, mi_est: 4.911874
+Iternation: 16000, loss: 0.093050, mi_est: 4.964129
+Iternation: 16500, loss: 0.072066, mi_est: 5.092501
+Iternation: 17000, loss: 0.096939, mi_est: 4.975408
+Iternation: 17500, loss: 0.057521, mi_est: 5.153903
+Iternation: 18000, loss: 0.074457, mi_est: 4.752573
+Iternation: 18500, loss: 0.099272, mi_est: 4.911157
+Iternation: 19000, loss: 0.119847, mi_est: 4.973366
+Iternation: 19500, loss: 0.061714, mi_est: 5.085644
+Iternation: 20000, loss: 0.065083, mi_est: 4.835572
+Iternation: 20500, loss: 0.041733, mi_est: 4.838969
+Iternation: 21000, loss: 0.054392, mi_est: 5.046503
+Iternation: 21500, loss: 0.052470, mi_est: 5.019598
+Iternation: 22000, loss: 0.078720, mi_est: 4.638598
+Iternation: 22500, loss: 0.155261, mi_est: 5.119012
+Iternation: 23000, loss: 0.098915, mi_est: 5.035570
+Iternation: 23500, loss: 0.092004, mi_est: 4.978342
+Iternation: 24000, loss: 0.077143, mi_est: 4.821725
+Iternation: 24500, loss: 0.080279, mi_est: 4.774734
+Iternation: 25000, loss: 0.103689, mi_est: 5.084228
+Iternation: 25500, loss: 0.063331, mi_est: 4.976677
+Iternation: 26000, loss: 0.106045, mi_est: 4.845330
+Iternation: 26500, loss: 0.065012, mi_est: 4.786227
+Iternation: 27000, loss: 0.073748, mi_est: 5.087410
+Iternation: 27500, loss: 0.094905, mi_est: 5.141056
+Iternation: 28000, loss: 0.067503, mi_est: 4.839124
+Iternation: 28500, loss: 0.080630, mi_est: 5.069396
+Iternation: 29000, loss: 0.131152, mi_est: 4.866922
+Iternation: 29500, loss: 0.081883, mi_est: 4.958781
+Iternation: 30000, loss: 0.101153, mi_est: 4.917331
+Iternation: 30500, loss: 0.083753, mi_est: 5.029068
+Iternation: 31000, loss: 0.082992, mi_est: 5.057919
+Iternation: 31500, loss: 0.117541, mi_est: 4.933711
+Iternation: 32000, loss: 0.136227, mi_est: 4.783689
+Iternation: 32500, loss: 0.147482, mi_est: 4.842118
+Iternation: 33000, loss: 0.045287, mi_est: 5.092826
+Iternation: 33500, loss: 0.081713, mi_est: 4.993938
+Iternation: 34000, loss: 0.104529, mi_est: 4.665576
+Iternation: 34500, loss: 0.079931, mi_est: 4.834094
+Iternation: 35000, loss: 0.072103, mi_est: 5.163781
+Iternation: 35500, loss: 0.090885, mi_est: 4.926799
+Iternation: 36000, loss: 0.093038, mi_est: 4.958525
+Iternation: 36500, loss: 0.081150, mi_est: 4.988827
+Iternation: 37000, loss: 0.083703, mi_est: 4.982520
+Iternation: 37500, loss: 0.116952, mi_est: 4.403316
+Iternation: 38000, loss: 0.064038, mi_est: 5.059274
+Iternation: 38500, loss: 0.063347, mi_est: 5.091222
+Iternation: 39000, loss: 0.056312, mi_est: 4.908441
+Iternation: 39500, loss: 0.075562, mi_est: 5.033188
 </pre></div>
 </div>
 </div>
@@ -697,10 +689,10 @@ Iternation: 39500, loss: 0.012341, mi_est: 6.442264
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x1e28a3b36c8&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x16a83caa748&gt;
 </pre></div>
 </div>
-<img alt="_images/adaptive_LS_PCM_37_1.svg" src="_images/adaptive_LS_PCM_37_1.svg" /></div>
+<img alt="_images/AdapLS_37_1.svg" src="_images/AdapLS_37_1.svg" /></div>
 </div>
 <p>Save the mutual information estimates.</p>
 <div class="cell docutils container">
@@ -741,8 +733,6 @@ Iternation: 39500, loss: 0.012341, mi_est: 6.442264
     
     <div class='prev-next-bottom'>
         
-    <a class='left-prev' id="prev-link" href="README.html" title="previous page">Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation</a>
-    <a class='right-next' id="next-link" href="infonce.html" title="next page">Estimating MI by noise contrastive method (InfoNCE)</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">
