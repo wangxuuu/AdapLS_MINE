@@ -93,7 +93,7 @@ commentsRunWhenDOMLoaded(addUtterances);
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Estimating MI by Probabilistic Classifier Method (PCM)" href="PCM.html" />
-    <link rel="prev" title="Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation" href="README.html" />
+    <link rel="prev" title="Estimating MI by the proposed adaptive label smoothing classifier-based model (AdapLS)" href="AdapLS.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -127,6 +127,11 @@ commentsRunWhenDOMLoaded(addUtterances);
  </li>
 </ul>
 <ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="AdapLS.html">
+   Estimating MI by the proposed  adaptive  label  smoothing classifier-based model (AdapLS)
+  </a>
+ </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Estimating MI by noise contrastive method (InfoNCE)
@@ -359,15 +364,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="simple">
 <li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-d11ddc3d-98ce-43b0-b80c-be60c368059c">
-<span class="eqno">(1)<a class="headerlink" href="#equation-d11ddc3d-98ce-43b0-b80c-be60c368059c" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b13d2a35-0686-426f-af64-2a27e81006cc">
+<span class="eqno">(6)<a class="headerlink" href="#equation-b13d2a35-0686-426f-af64-2a27e81006cc" title="Permalink to this equation">¶</a></span>\[\begin{align}
 p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
 <ul class="simple">
 <li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-e76c6840-61d5-4824-a0df-a13742891495">
-<span class="eqno">(2)<a class="headerlink" href="#equation-e76c6840-61d5-4824-a0df-a13742891495" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-2c9d936f-e9ce-4110-802d-4c72da5204f6">
+<span class="eqno">(7)<a class="headerlink" href="#equation-2c9d936f-e9ce-4110-802d-4c72da5204f6" title="Permalink to this equation">¶</a></span>\[\begin{align} 
 p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right)
 \end{align}\]</div>
@@ -448,8 +453,8 @@ p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix
 </div>
 </div>
 <p>The function <code class="docutils literal notranslate"><span class="pre">infonce_bound</span></code> below returns the empirical estimate of the following infoNCE lower bound on the mutual information <span class="math notranslate nohighlight">\(I(X\wedge Y)\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9f2b84ac-0241-4fbf-948d-6869261a7235">
-<span class="eqno">(3)<a class="headerlink" href="#equation-9f2b84ac-0241-4fbf-948d-6869261a7235" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-7192707d-0db2-4cc6-8164-8f44198e02ef">
+<span class="eqno">(8)<a class="headerlink" href="#equation-7192707d-0db2-4cc6-8164-8f44198e02ef" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, Y')} \right| X \right]} \right] \leq I(X\wedge Y) 
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(f: \mathcal{X}\times \mathcal{Y}\to \mathbb{R}\)</span> is a function to be implemented by a neural network, and <span class="math notranslate nohighlight">\(p_{Y'|X,Y}(y'|x,y)=p_{Y}(y)\)</span>, i.e., <span class="math notranslate nohighlight">\(Y'\)</span> is identically distributed as <span class="math notranslate nohighlight">\(Y\)</span> and independent of <span class="math notranslate nohighlight">\((X,Y)\)</span>.</p>
@@ -488,13 +493,13 @@ I_{\text{infoNCE}}(f) := E\left[\log \frac{e^{f(X, Y)}}{E \left[\left. e^{f( X, 
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>Since maximizing the infoNCE bound over <span class="math notranslate nohighlight">\(f\)</span> attains the mutual information</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5d01ea57-2c33-457f-bec0-b491f9d716df">
-<span class="eqno">(4)<a class="headerlink" href="#equation-5d01ea57-2c33-457f-bec0-b491f9d716df" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-135b1d19-5676-472c-9cee-9a97602def3b">
+<span class="eqno">(9)<a class="headerlink" href="#equation-135b1d19-5676-472c-9cee-9a97602def3b" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X\wedge Y) = \sup_{f} I_{\text{infoNCE}}(f),
 \end{align}\]</div>
 <p>we train the neural network to minimize the loss <span class="math notranslate nohighlight">\(-I_{\text{infoNCE}}(f)\)</span>. The optimal solution <span class="math notranslate nohighlight">\(f\)</span> satisfies</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f4ff0cb1-4c5f-4bec-bcb0-4638392abcc0">
-<span class="eqno">(5)<a class="headerlink" href="#equation-f4ff0cb1-4c5f-4bec-bcb0-4638392abcc0" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c103b90f-c0ba-4f59-ad53-82018ac5a538">
+<span class="eqno">(10)<a class="headerlink" href="#equation-c103b90f-c0ba-4f59-ad53-82018ac5a538" title="Permalink to this equation">¶</a></span>\[\begin{align}
 f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y \in \mathcal{Y}
 \end{align}\]</div>
 <p>for any constant <span class="math notranslate nohighlight">\(c\)</span>.</p>
@@ -681,7 +686,7 @@ Iternation: 39500, loss: 3.845955
     
     <div class='prev-next-bottom'>
         
-    <a class='left-prev' id="prev-link" href="README.html" title="previous page">Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation</a>
+    <a class='left-prev' id="prev-link" href="AdapLS.html" title="previous page">Estimating MI by the proposed  adaptive  label  smoothing classifier-based model (AdapLS)</a>
     <a class='right-next' id="next-link" href="PCM.html" title="next page">Estimating MI by Probabilistic Classifier Method (PCM)</a>
 
     </div>

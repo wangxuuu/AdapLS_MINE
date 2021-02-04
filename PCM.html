@@ -127,6 +127,11 @@ commentsRunWhenDOMLoaded(addUtterances);
 </ul>
 <ul class="current nav sidenav_l1">
  <li class="toctree-l1">
+  <a class="reference internal" href="AdapLS.html">
+   Estimating MI by the proposed  adaptive  label  smoothing classifier-based model (AdapLS)
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="infonce.html">
    Estimating MI by noise contrastive method (InfoNCE)
   </a>
@@ -363,15 +368,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="simple">
 <li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-8ea7bb7d-e046-41e6-86c6-3c1476896531">
-<span class="eqno">(6)<a class="headerlink" href="#equation-8ea7bb7d-e046-41e6-86c6-3c1476896531" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-dfc43696-5309-49dd-8e68-78bd9e5dca00">
+<span class="eqno">(11)<a class="headerlink" href="#equation-dfc43696-5309-49dd-8e68-78bd9e5dca00" title="Permalink to this equation">¶</a></span>\[\begin{align} 
 p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 \end{align}\]</div>
 <ul class="simple">
 <li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-b4ce1825-04e6-4734-b584-e8335f3c655b">
-<span class="eqno">(7)<a class="headerlink" href="#equation-b4ce1825-04e6-4734-b584-e8335f3c655b" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-46da492e-15a2-428e-871a-4b653a62ce7f">
+<span class="eqno">(12)<a class="headerlink" href="#equation-46da492e-15a2-428e-871a-4b653a62ce7f" title="Permalink to this equation">¶</a></span>\[\begin{align} 
  p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
  \end{align}\]</div>
 <div class="cell docutils container">
@@ -467,13 +472,13 @@ p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rh
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>The estimate of MI given by Probabilistic Classifier Method (PCM) is as follows:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d379a16e-7d2a-494d-96d5-153c52ebad64">
-<span class="eqno">(8)<a class="headerlink" href="#equation-d379a16e-7d2a-494d-96d5-153c52ebad64" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-1e1a431c-595d-4f62-9b62-5a691794307b">
+<span class="eqno">(13)<a class="headerlink" href="#equation-1e1a431c-595d-4f62-9b62-5a691794307b" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X, Y) = E \left[ \ln r(X, Y) \right],
 \end{align}\]</div>
 <p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9c2448c9-1680-49f3-8c1e-23d1234a101f">
-<span class="eqno">(9)<a class="headerlink" href="#equation-9c2448c9-1680-49f3-8c1e-23d1234a101f" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-6aaf666c-9d69-4c24-b97a-97e88dc3a127">
+<span class="eqno">(14)<a class="headerlink" href="#equation-6aaf666c-9d69-4c24-b97a-97e88dc3a127" title="Permalink to this equation">¶</a></span>\[\begin{align}
 r(X, Y) := \frac{p_{C}(0)}{p_{C}(1)} \cdot \frac{p_{{C} | \tilde{X}\tilde{Y}} (1|x,y)}{p_{{C} | \tilde{X}\tilde{Y}} (0|x,y)}.
 \end{align}\]</div>
 <p>To obtain MI estimate of given samples by Probabilistic Classifier Method (PCM), we train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> to implement <span class="math notranslate nohighlight">\(p_{{C} | \tilde{X}\tilde{Y}}(1|x,y)\)</span> by minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{C} | \tilde{X}\tilde{Y}}\)</span>.</p>
