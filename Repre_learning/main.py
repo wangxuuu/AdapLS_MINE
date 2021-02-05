@@ -104,7 +104,7 @@ def acti_func(x, a, b, c):
     # x: 0 b c 1
     x = tf.stop_gradient(x)
     alpha = tf.zeros_like(x)
-    alpha = tf.where(x<=b, a*x/b+a, alpha)
+    alpha = tf.where(x<=b, -a*x/b+a, alpha)
     alpha = tf.where((x>b) & (x<c), 0., alpha)
     alpha = tf.where(x>=c, a*x/(1-c)+a*c/(c-1), alpha)
     return alpha
