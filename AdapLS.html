@@ -333,7 +333,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--gamma&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clipping parameter&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b1&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--b2&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: decay of first order momentum of gradient&quot;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n_iters&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">40000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of epochs of training&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n_iters&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">60000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of epochs of training&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--batch_size&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;size of the batches&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--lr&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adam: learning rate&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--hidden_dim&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Hidden dimension&quot;</span><span class="p">)</span>
@@ -366,15 +366,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <ul class="simple">
 <li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-e15fd49f-e480-4a84-aa73-025e058ad47e">
-<span class="eqno">(1)<a class="headerlink" href="#equation-e15fd49f-e480-4a84-aa73-025e058ad47e" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-3dee3f9e-2fa7-496b-af19-6a3a5b588d5f">
+<span class="eqno">(1)<a class="headerlink" href="#equation-3dee3f9e-2fa7-496b-af19-6a3a5b588d5f" title="Permalink to this equation">¶</a></span>\[\begin{align} 
 p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
 \end{align}\]</div>
 <ul class="simple">
 <li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-4ed29e3b-0a6d-4e43-ba15-83d03f43f8d8">
-<span class="eqno">(2)<a class="headerlink" href="#equation-4ed29e3b-0a6d-4e43-ba15-83d03f43f8d8" title="Permalink to this equation">¶</a></span>\[\begin{align} 
+<div class="amsmath math notranslate nohighlight" id="equation-e8ca86ea-a075-4133-a008-3efcb4b396d0">
+<span class="eqno">(2)<a class="headerlink" href="#equation-e8ca86ea-a075-4133-a008-3efcb4b396d0" title="Permalink to this equation">¶</a></span>\[\begin{align} 
  p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
  \end{align}\]</div>
 <div class="cell docutils container">
@@ -472,13 +472,13 @@ p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rh
 </div>
 </div>
 <p>The function <code class="docutils literal notranslate"><span class="pre">mi_estimate</span></code> below returns the empirical estimate of MI given by Probabilistic Classifier Method (PCM):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-bac45018-b3cd-46e7-900a-ef313151294c">
-<span class="eqno">(3)<a class="headerlink" href="#equation-bac45018-b3cd-46e7-900a-ef313151294c" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-6fe77748-2259-4de8-be1c-63b31c1862ca">
+<span class="eqno">(3)<a class="headerlink" href="#equation-6fe77748-2259-4de8-be1c-63b31c1862ca" title="Permalink to this equation">¶</a></span>\[\begin{align}
 I(X, Y) = E \left[ \ln r(X, Y) \right],
 \end{align}\]</div>
 <p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-77c7799e-c50f-441d-b220-236872809d27">
-<span class="eqno">(4)<a class="headerlink" href="#equation-77c7799e-c50f-441d-b220-236872809d27" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-bc0f26bc-ccb2-4710-b403-277ac566fb30">
+<span class="eqno">(4)<a class="headerlink" href="#equation-bc0f26bc-ccb2-4710-b403-277ac566fb30" title="Permalink to this equation">¶</a></span>\[\begin{align}
 r(X, Y) := \frac{p_{C}(0)}{p_{C}(1)} \cdot \frac{p_{{C} | {\tilde{X}}{\tilde{Y}}} (1|x,y)}{p_{{C} | {\tilde{X}}{\tilde{Y}}} (0|x,y)},
 \end{align}\]</div>
 <p>and <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span>
@@ -526,8 +526,8 @@ is implemented by a neural network and may be clipped to a certain range before 
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>We want to obtain <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span> by a neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>.</p>
 <p>To train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>, instead of minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>, we propose minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to the distribution</p>
-<div class="amsmath math notranslate nohighlight" id="equation-425402a3-0032-41e7-9827-0ad0051b862f">
-<span class="eqno">(5)<a class="headerlink" href="#equation-425402a3-0032-41e7-9827-0ad0051b862f" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-ddbb066e-499e-4695-8437-77308ac2ba76">
+<span class="eqno">(5)<a class="headerlink" href="#equation-ddbb066e-499e-4695-8437-77308ac2ba76" title="Permalink to this equation">¶</a></span>\[\begin{align}
 p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}} := (1-\alpha) \cdot p_{{C} | {\tilde{X}}{\tilde{Y}}} + \alpha \cdot p_{U},
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(p_{U} := \frac{1}{2}\)</span> is the uniform over the labels <span class="math notranslate nohighlight">\(\{0, 1\}\)</span> (in fact <span class="math notranslate nohighlight">\(p_{U}\)</span> can be any distribution over labels), and <span class="math notranslate nohighlight">\(\alpha\)</span> is the smoothing weight.</p>
@@ -581,86 +581,126 @@ p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}} := (1-\alpha) \cdot p_{{C} | {\tilde{X}}{\t
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.693174, mi_est: 0.000026
-Iternation: 500, loss: 0.691806, mi_est: 0.001975
-Iternation: 1000, loss: 0.660970, mi_est: 0.078561
-Iternation: 1500, loss: 0.402184, mi_est: 0.826262
-Iternation: 2000, loss: 0.253150, mi_est: 1.734758
-Iternation: 2500, loss: 0.174058, mi_est: 2.119874
-Iternation: 3000, loss: 0.168956, mi_est: 2.623216
-Iternation: 3500, loss: 0.155517, mi_est: 2.850455
-Iternation: 4000, loss: 0.172560, mi_est: 2.941039
-Iternation: 4500, loss: 0.096274, mi_est: 3.417146
-Iternation: 5000, loss: 0.086298, mi_est: 3.685113
-Iternation: 5500, loss: 0.066560, mi_est: 3.934117
-Iternation: 6000, loss: 0.097056, mi_est: 4.140526
-Iternation: 6500, loss: 0.061649, mi_est: 4.252849
-Iternation: 7000, loss: 0.078944, mi_est: 4.338461
-Iternation: 7500, loss: 0.083970, mi_est: 4.448709
-Iternation: 8000, loss: 0.117480, mi_est: 4.307809
-Iternation: 8500, loss: 0.109773, mi_est: 4.286031
-Iternation: 9000, loss: 0.101739, mi_est: 4.489611
-Iternation: 9500, loss: 0.089589, mi_est: 4.719651
-Iternation: 10000, loss: 0.073823, mi_est: 4.480484
-Iternation: 10500, loss: 0.117588, mi_est: 4.757344
-Iternation: 11000, loss: 0.097735, mi_est: 4.427690
-Iternation: 11500, loss: 0.076174, mi_est: 4.928258
-Iternation: 12000, loss: 0.071927, mi_est: 4.884167
-Iternation: 12500, loss: 0.110974, mi_est: 4.867202
-Iternation: 13000, loss: 0.108328, mi_est: 4.816600
-Iternation: 13500, loss: 0.092782, mi_est: 4.931309
-Iternation: 14000, loss: 0.124240, mi_est: 4.684674
-Iternation: 14500, loss: 0.062503, mi_est: 5.055434
-Iternation: 15000, loss: 0.113395, mi_est: 4.823802
-Iternation: 15500, loss: 0.096692, mi_est: 4.911874
-Iternation: 16000, loss: 0.093050, mi_est: 4.964129
-Iternation: 16500, loss: 0.072066, mi_est: 5.092501
-Iternation: 17000, loss: 0.096939, mi_est: 4.975408
-Iternation: 17500, loss: 0.057521, mi_est: 5.153903
-Iternation: 18000, loss: 0.074457, mi_est: 4.752573
-Iternation: 18500, loss: 0.099272, mi_est: 4.911157
-Iternation: 19000, loss: 0.119847, mi_est: 4.973366
-Iternation: 19500, loss: 0.061714, mi_est: 5.085644
-Iternation: 20000, loss: 0.065083, mi_est: 4.835572
-Iternation: 20500, loss: 0.041733, mi_est: 4.838969
-Iternation: 21000, loss: 0.054392, mi_est: 5.046503
-Iternation: 21500, loss: 0.052470, mi_est: 5.019598
-Iternation: 22000, loss: 0.078720, mi_est: 4.638598
-Iternation: 22500, loss: 0.155261, mi_est: 5.119012
-Iternation: 23000, loss: 0.098915, mi_est: 5.035570
-Iternation: 23500, loss: 0.092004, mi_est: 4.978342
-Iternation: 24000, loss: 0.077143, mi_est: 4.821725
-Iternation: 24500, loss: 0.080279, mi_est: 4.774734
-Iternation: 25000, loss: 0.103689, mi_est: 5.084228
-Iternation: 25500, loss: 0.063331, mi_est: 4.976677
-Iternation: 26000, loss: 0.106045, mi_est: 4.845330
-Iternation: 26500, loss: 0.065012, mi_est: 4.786227
-Iternation: 27000, loss: 0.073748, mi_est: 5.087410
-Iternation: 27500, loss: 0.094905, mi_est: 5.141056
-Iternation: 28000, loss: 0.067503, mi_est: 4.839124
-Iternation: 28500, loss: 0.080630, mi_est: 5.069396
-Iternation: 29000, loss: 0.131152, mi_est: 4.866922
-Iternation: 29500, loss: 0.081883, mi_est: 4.958781
-Iternation: 30000, loss: 0.101153, mi_est: 4.917331
-Iternation: 30500, loss: 0.083753, mi_est: 5.029068
-Iternation: 31000, loss: 0.082992, mi_est: 5.057919
-Iternation: 31500, loss: 0.117541, mi_est: 4.933711
-Iternation: 32000, loss: 0.136227, mi_est: 4.783689
-Iternation: 32500, loss: 0.147482, mi_est: 4.842118
-Iternation: 33000, loss: 0.045287, mi_est: 5.092826
-Iternation: 33500, loss: 0.081713, mi_est: 4.993938
-Iternation: 34000, loss: 0.104529, mi_est: 4.665576
-Iternation: 34500, loss: 0.079931, mi_est: 4.834094
-Iternation: 35000, loss: 0.072103, mi_est: 5.163781
-Iternation: 35500, loss: 0.090885, mi_est: 4.926799
-Iternation: 36000, loss: 0.093038, mi_est: 4.958525
-Iternation: 36500, loss: 0.081150, mi_est: 4.988827
-Iternation: 37000, loss: 0.083703, mi_est: 4.982520
-Iternation: 37500, loss: 0.116952, mi_est: 4.403316
-Iternation: 38000, loss: 0.064038, mi_est: 5.059274
-Iternation: 38500, loss: 0.063347, mi_est: 5.091222
-Iternation: 39000, loss: 0.056312, mi_est: 4.908441
-Iternation: 39500, loss: 0.075562, mi_est: 5.033188
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.693223, mi_est: -0.000101
+Iternation: 500, loss: 0.691924, mi_est: 0.001614
+Iternation: 1000, loss: 0.665609, mi_est: 0.068321
+Iternation: 1500, loss: 0.414793, mi_est: 0.775586
+Iternation: 2000, loss: 0.253970, mi_est: 1.697711
+Iternation: 2500, loss: 0.174388, mi_est: 2.101006
+Iternation: 3000, loss: 0.166164, mi_est: 2.605197
+Iternation: 3500, loss: 0.155982, mi_est: 2.841541
+Iternation: 4000, loss: 0.174443, mi_est: 2.929928
+Iternation: 4500, loss: 0.095256, mi_est: 3.407237
+Iternation: 5000, loss: 0.087209, mi_est: 3.671258
+Iternation: 5500, loss: 0.064488, mi_est: 3.919998
+Iternation: 6000, loss: 0.095738, mi_est: 4.148105
+Iternation: 6500, loss: 0.062589, mi_est: 4.257941
+Iternation: 7000, loss: 0.076234, mi_est: 4.340260
+Iternation: 7500, loss: 0.082842, mi_est: 4.452869
+Iternation: 8000, loss: 0.114905, mi_est: 4.292974
+Iternation: 8500, loss: 0.108709, mi_est: 4.291416
+Iternation: 9000, loss: 0.101272, mi_est: 4.480629
+Iternation: 9500, loss: 0.088064, mi_est: 4.720654
+Iternation: 10000, loss: 0.074219, mi_est: 4.480909
+Iternation: 10500, loss: 0.116837, mi_est: 4.740764
+Iternation: 11000, loss: 0.099818, mi_est: 4.413824
+Iternation: 11500, loss: 0.072638, mi_est: 4.914423
+Iternation: 12000, loss: 0.070394, mi_est: 4.875184
+Iternation: 12500, loss: 0.111291, mi_est: 4.840117
+Iternation: 13000, loss: 0.107812, mi_est: 4.794990
+Iternation: 13500, loss: 0.092610, mi_est: 4.899735
+Iternation: 14000, loss: 0.123937, mi_est: 4.662586
+Iternation: 14500, loss: 0.062783, mi_est: 5.025394
+Iternation: 15000, loss: 0.113903, mi_est: 4.784110
+Iternation: 15500, loss: 0.094929, mi_est: 4.877805
+Iternation: 16000, loss: 0.091708, mi_est: 4.937254
+Iternation: 16500, loss: 0.073214, mi_est: 5.047528
+Iternation: 17000, loss: 0.094328, mi_est: 4.929675
+Iternation: 17500, loss: 0.056482, mi_est: 5.117757
+Iternation: 18000, loss: 0.072562, mi_est: 4.715728
+Iternation: 18500, loss: 0.097281, mi_est: 4.881880
+Iternation: 19000, loss: 0.118498, mi_est: 4.940796
+Iternation: 19500, loss: 0.061730, mi_est: 5.049310
+Iternation: 20000, loss: 0.065751, mi_est: 4.798854
+Iternation: 20500, loss: 0.041664, mi_est: 4.804278
+Iternation: 21000, loss: 0.055456, mi_est: 5.003839
+Iternation: 21500, loss: 0.050942, mi_est: 4.980196
+Iternation: 22000, loss: 0.079064, mi_est: 4.589282
+Iternation: 22500, loss: 0.156443, mi_est: 5.073649
+Iternation: 23000, loss: 0.097265, mi_est: 4.977273
+Iternation: 23500, loss: 0.093301, mi_est: 4.924125
+Iternation: 24000, loss: 0.075188, mi_est: 4.777357
+Iternation: 24500, loss: 0.078395, mi_est: 4.733030
+Iternation: 25000, loss: 0.100057, mi_est: 5.029529
+Iternation: 25500, loss: 0.062130, mi_est: 4.922980
+Iternation: 26000, loss: 0.106021, mi_est: 4.794126
+Iternation: 26500, loss: 0.064098, mi_est: 4.745516
+Iternation: 27000, loss: 0.074674, mi_est: 5.038038
+Iternation: 27500, loss: 0.092295, mi_est: 5.069235
+Iternation: 28000, loss: 0.066452, mi_est: 4.771264
+Iternation: 28500, loss: 0.080011, mi_est: 5.014525
+Iternation: 29000, loss: 0.129011, mi_est: 4.827820
+Iternation: 29500, loss: 0.081553, mi_est: 4.903249
+Iternation: 30000, loss: 0.098246, mi_est: 4.868933
+Iternation: 30500, loss: 0.082627, mi_est: 4.988998
+Iternation: 31000, loss: 0.083208, mi_est: 4.994774
+Iternation: 31500, loss: 0.117691, mi_est: 4.862545
+Iternation: 32000, loss: 0.133922, mi_est: 4.734841
+Iternation: 32500, loss: 0.145445, mi_est: 4.788671
+Iternation: 33000, loss: 0.045230, mi_est: 5.021152
+Iternation: 33500, loss: 0.080621, mi_est: 4.929432
+Iternation: 34000, loss: 0.102598, mi_est: 4.619001
+Iternation: 34500, loss: 0.080900, mi_est: 4.796981
+Iternation: 35000, loss: 0.069962, mi_est: 5.101327
+Iternation: 35500, loss: 0.092603, mi_est: 4.868690
+Iternation: 36000, loss: 0.091172, mi_est: 4.911704
+Iternation: 36500, loss: 0.077532, mi_est: 4.935873
+Iternation: 37000, loss: 0.082197, mi_est: 4.934094
+Iternation: 37500, loss: 0.115408, mi_est: 4.360623
+Iternation: 38000, loss: 0.064417, mi_est: 4.986865
+Iternation: 38500, loss: 0.061719, mi_est: 5.010761
+Iternation: 39000, loss: 0.055653, mi_est: 4.839283
+Iternation: 39500, loss: 0.074393, mi_est: 4.952278
+Iternation: 40000, loss: 0.112275, mi_est: 4.686230
+Iternation: 40500, loss: 0.096298, mi_est: 4.867712
+Iternation: 41000, loss: 0.059133, mi_est: 4.844005
+Iternation: 41500, loss: 0.090497, mi_est: 5.119436
+Iternation: 42000, loss: 0.090280, mi_est: 4.781676
+Iternation: 42500, loss: 0.078037, mi_est: 4.631750
+Iternation: 43000, loss: 0.071995, mi_est: 4.875722
+Iternation: 43500, loss: 0.085157, mi_est: 4.686130
+Iternation: 44000, loss: 0.108532, mi_est: 4.636340
+Iternation: 44500, loss: 0.094740, mi_est: 4.890665
+Iternation: 45000, loss: 0.078121, mi_est: 5.138164
+Iternation: 45500, loss: 0.075284, mi_est: 4.743979
+Iternation: 46000, loss: 0.115209, mi_est: 4.525914
+Iternation: 46500, loss: 0.083969, mi_est: 4.745441
+Iternation: 47000, loss: 0.135979, mi_est: 4.620874
+Iternation: 47500, loss: 0.140948, mi_est: 4.350669
+Iternation: 48000, loss: 0.051632, mi_est: 4.958722
+Iternation: 48500, loss: 0.053381, mi_est: 4.789315
+Iternation: 49000, loss: 0.073913, mi_est: 4.538983
+Iternation: 49500, loss: 0.123886, mi_est: 4.769751
+Iternation: 50000, loss: 0.062334, mi_est: 5.001263
+Iternation: 50500, loss: 0.068045, mi_est: 4.852282
+Iternation: 51000, loss: 0.094685, mi_est: 4.931803
+Iternation: 51500, loss: 0.062033, mi_est: 4.896703
+Iternation: 52000, loss: 0.053338, mi_est: 4.925163
+Iternation: 52500, loss: 0.104054, mi_est: 4.563111
+Iternation: 53000, loss: 0.109301, mi_est: 4.726335
+Iternation: 53500, loss: 0.083491, mi_est: 4.571031
+Iternation: 54000, loss: 0.082933, mi_est: 5.000661
+Iternation: 54500, loss: 0.119178, mi_est: 4.684453
+Iternation: 55000, loss: 0.046914, mi_est: 5.007573
+Iternation: 55500, loss: 0.094039, mi_est: 4.625651
+Iternation: 56000, loss: 0.113288, mi_est: 4.771509
+Iternation: 56500, loss: 0.087834, mi_est: 4.582964
+Iternation: 57000, loss: 0.049060, mi_est: 4.930907
+Iternation: 57500, loss: 0.107149, mi_est: 4.658303
+Iternation: 58000, loss: 0.062443, mi_est: 4.636427
+Iternation: 58500, loss: 0.060932, mi_est: 4.799589
+Iternation: 59000, loss: 0.063252, mi_est: 4.903440
+Iternation: 59500, loss: 0.097978, mi_est: 4.833655
 </pre></div>
 </div>
 </div>
@@ -690,21 +730,20 @@ Iternation: 39500, loss: 0.075562, mi_est: 5.033188
         <span class="k">break</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number of iterations&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;MI estimation&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_d</span><span class="si">{}</span><span class="s1">_clip</span><span class="si">{}</span><span class="s1">_rho</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">density</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x16a83caa748&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fa5580c6d90&gt;
 </pre></div>
 </div>
 <img alt="_images/AdapLS_37_1.svg" src="_images/AdapLS_37_1.svg" /></div>
 </div>
-<p>Save the mutual information estimates.</p>
+<p>Save the model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">mi_copy</span><span class="p">,</span> <span class="s1">&#39;./AdapLS_PCM</span><span class="si">{}</span><span class="s1">.pth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_size</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="s1">&#39;./results/AdapLS_PCM.pth&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

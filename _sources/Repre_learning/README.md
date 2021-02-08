@@ -1,11 +1,9 @@
-# CIFAR10 and MNIST Experiments
+# Representation learning Experiments
 
-The code is adapted from [here](https://github.com/google-research/google-research/blob/master/mutual_information_representation_learning/mirl.ipynb)
+The code is adapted from [here](https://github.com/google-research/google-research/blob/master/mutual_information_representation_learning/mirl.ipynb) and [here](https://github.com/yaohungt/Pointwise_Dependency_Neural_Estimation/tree/master/RepreLearn_Shallow).
 
 
-## Usage
-
-### Evaluating Self-supervised Representations
+## Demo to run the code
 
 CIFAR10
 

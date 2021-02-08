@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CIFAR10 and MNIST Experiments</title>
+    <title>Representation learning Experiments</title>
     
   <link rel="stylesheet" href="../_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
 
@@ -211,16 +211,9 @@ commentsRunWhenDOMLoaded(addUtterances);
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#usage">
-   Usage
+  <a class="reference internal nav-link" href="#demo-to-run-the-code">
+   Demo to run the code
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#evaluating-self-supervised-representations">
-     Evaluating Self-supervised Representations
-    </a>
-   </li>
-  </ul>
  </li>
 </ul>
 
@@ -233,13 +226,11 @@ commentsRunWhenDOMLoaded(addUtterances);
         
               <div>
                 
-  <div class="section" id="cifar10-and-mnist-experiments">
-<h1>CIFAR10 and MNIST Experiments<a class="headerlink" href="#cifar10-and-mnist-experiments" title="Permalink to this headline">¶</a></h1>
-<p>The code is adapted from <a class="reference external" href="https://github.com/google-research/google-research/blob/master/mutual_information_representation_learning/mirl.ipynb">here</a></p>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="evaluating-self-supervised-representations">
-<h3>Evaluating Self-supervised Representations<a class="headerlink" href="#evaluating-self-supervised-representations" title="Permalink to this headline">¶</a></h3>
+  <div class="section" id="representation-learning-experiments">
+<h1>Representation learning Experiments<a class="headerlink" href="#representation-learning-experiments" title="Permalink to this headline">¶</a></h1>
+<p>The code is adapted from <a class="reference external" href="https://github.com/google-research/google-research/blob/master/mutual_information_representation_learning/mirl.ipynb">here</a> and <a class="reference external" href="https://github.com/yaohungt/Pointwise_Dependency_Neural_Estimation/tree/master/RepreLearn_Shallow">here</a>.</p>
+<div class="section" id="demo-to-run-the-code">
+<h2>Demo to run the code<a class="headerlink" href="#demo-to-run-the-code" title="Permalink to this headline">¶</a></h2>
 <p>CIFAR10</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">dataset</span> <span class="n">cifar10</span> <span class="o">--</span><span class="n">lr</span> <span class="mf">1e-4</span> <span class="o">--</span><span class="n">batch_size</span> <span class="mi">128</span>
 </pre></div>
@@ -247,7 +238,6 @@ commentsRunWhenDOMLoaded(addUtterances);
 <p>MNIST</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">dataset</span> <span class="n">mnist</span> <span class="o">--</span><span class="n">lr</span> <span class="mf">1e-4</span> <span class="o">--</span><span class="n">batch_size</span> <span class="mi">128</span>
 </pre></div>
-</div>
 </div>
 </div>
 </div>
