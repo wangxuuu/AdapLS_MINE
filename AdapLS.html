@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Estimating MI by the proposed adaptive label smoothing classifier-based model (AdapLS)</title>
     
-  <link rel="stylesheet" href="_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
+  <link rel="stylesheet" href="_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
 
     
   <link rel="stylesheet"
@@ -25,8 +25,8 @@
     href="_static/vendor/lato_latin-ext/1.44.1/index.css">
 
     
-    <link rel="stylesheet" href="_static/sphinx-book-theme.40e2e510f6b7d1648584402491bb10fe.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.40e2e510f6b7d1648584402491bb10fe.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
@@ -34,13 +34,12 @@
     <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.3da636dd464baa7582d2.js">
+  <link rel="preload" as="script" href="_static/js/index.d3f166471bb80abb5163.js">
 
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
@@ -81,8 +80,6 @@ commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/sphinx-book-theme.d31b09fe5c1d09cb49b26a786de4a05d.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe,.cell"
@@ -90,6 +87,8 @@ commentsRunWhenDOMLoaded(addUtterances);
         const thebe_selector_output = ".output,.cell_output"
     </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Estimating MI by noise contrastive method (InfoNCE)" href="infonce.html" />
@@ -140,6 +139,16 @@ commentsRunWhenDOMLoaded(addUtterances);
  <li class="toctree-l1">
   <a class="reference internal" href="PCM.html">
    Estimating MI by Probabilistic Classifier Method (PCM)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Analysis.html">
+   1. Comparisons between different MI estimators with AdapLS
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Analysis.html#plot-the-error-of-point-wise-mi-estimates">
+   2. Plot the error of point-wise MI estimates.
   </a>
  </li>
 </ul>
@@ -306,8 +315,9 @@ commentsRunWhenDOMLoaded(addUtterances);
 <span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span>
 <span class="n">LongTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">LongTensor</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span>
 <span class="n">torch</span><span class="o">.</span><span class="n">set_default_tensor_type</span><span class="p">(</span><span class="n">FloatTensor</span><span class="p">)</span>
-<span class="n">Tensor</span> <span class="o">=</span> <span class="n">FloatTensor</span>
-<span class="c1">#Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor</span>
+
+<span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;./results/AdapLS&#39;</span> <span class="c1"># filename</span>
+<span class="n">chkpt_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">+</span><span class="s1">&#39;.pt&#39;</span>                         <span class="c1"># checkpoint</span>
 </pre></div>
 </div>
 </div>
@@ -342,7 +352,6 @@ commentsRunWhenDOMLoaded(addUtterances);
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--ma_ef&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;move average ef&quot;</span><span class="p">)</span>
 <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--alpha&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;smooth parameter&quot;</span><span class="p">)</span>
 
-<span class="c1"># opt = parser.parse_args()</span>
 <span class="n">opt</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
 <span class="c1"># adaptive LS parameters</span>
 <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="mf">1e-8</span>  <span class="c1"># a is \alpha_0, b is \tau and c is 1-\tau in the paper</span>
@@ -364,19 +373,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p>Define the function <code class="docutils literal notranslate"><span class="pre">generate_data</span></code> for generating Gaussian or Mixed Gaussian distributions.</p>
 <ul class="simple">
-<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
+<li><p>When generating Gaussian distrition, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as
+\begin{align}
+p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \ \rho &amp; 1\ \end{bmatrix} \right)
+\end{align}</p></li>
+<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as
+\begin{align}
+p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \ \rho &amp; 1\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \ {-} \rho &amp; 1\ \end{bmatrix} \right)
+\end{align}</p></li>
 </ul>
-<div class="amsmath math notranslate nohighlight" id="equation-3dee3f9e-2fa7-496b-af19-6a3a5b588d5f">
-<span class="eqno">(1)<a class="headerlink" href="#equation-3dee3f9e-2fa7-496b-af19-6a3a5b588d5f" title="Permalink to this equation">¶</a></span>\[\begin{align} 
-p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) 
-\end{align}\]</div>
-<ul class="simple">
-<li><p>When generating Mixed Gaussian distributions, <span class="math notranslate nohighlight">\({X}\)</span> and <span class="math notranslate nohighlight">\({Y}\)</span> are distributed as</p></li>
-</ul>
-<div class="amsmath math notranslate nohighlight" id="equation-e8ca86ea-a075-4133-a008-3efcb4b396d0">
-<span class="eqno">(2)<a class="headerlink" href="#equation-e8ca86ea-a075-4133-a008-3efcb4b396d0" title="Permalink to this equation">¶</a></span>\[\begin{align} 
- p_{XY} = \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\\ \end{bmatrix} \right) + \frac{1}{2} \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; {-} \rho \\ {-} \rho &amp; 1\\ \end{bmatrix} \right) 
- \end{align}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
@@ -471,17 +476,15 @@ p_{XY} = \prod_{i=1}^d \mathcal{N} \left( \mathbf{0}, \begin{bmatrix}1 &amp; \rh
 </div>
 </div>
 </div>
-<p>The function <code class="docutils literal notranslate"><span class="pre">mi_estimate</span></code> below returns the empirical estimate of MI given by Probabilistic Classifier Method (PCM):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6fe77748-2259-4de8-be1c-63b31c1862ca">
-<span class="eqno">(3)<a class="headerlink" href="#equation-6fe77748-2259-4de8-be1c-63b31c1862ca" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<p>The function <code class="docutils literal notranslate"><span class="pre">mi_estimate</span></code> below returns the empirical estimate of MI given by Probabilistic Classifier Method (PCM):
+\begin{align}
 I(X, Y) = E \left[ \ln r(X, Y) \right],
-\end{align}\]</div>
-<p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-bc0f26bc-ccb2-4710-b403-277ac566fb30">
-<span class="eqno">(4)<a class="headerlink" href="#equation-bc0f26bc-ccb2-4710-b403-277ac566fb30" title="Permalink to this equation">¶</a></span>\[\begin{align}
+\end{align}
+where
+\begin{align}
 r(X, Y) := \frac{p_{C}(0)}{p_{C}(1)} \cdot \frac{p_{{C} | {\tilde{X}}{\tilde{Y}}} (1|x,y)}{p_{{C} | {\tilde{X}}{\tilde{Y}}} (0|x,y)},
-\end{align}\]</div>
-<p>and <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span>
+\end{align}
+and <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span>
 is implemented by a neural network and may be clipped to a certain range before used for calculating MI estimation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -510,7 +513,6 @@ is implemented by a neural network and may be clipped to a certain range before 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">discriminator</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-
 <span class="c1"># move NN model GPU if GPU is available</span>
 <span class="k">if</span> <span class="n">cuda</span><span class="p">:</span>
     <span class="n">discriminator</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
@@ -521,186 +523,81 @@ is implemented by a neural network and may be clipped to a certain range before 
 </div>
 </div>
 </div>
+<p>Load previous results.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">load_available</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># set to False to prevent loading previous results</span>
+<span class="k">if</span> <span class="n">load_available</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">chkpt_name</span><span class="p">):</span>
+    <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+        <span class="n">chkpt_name</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+    <span class="n">mi_list</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;mi_list&#39;</span><span class="p">]</span>
+    <span class="n">model_state</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s1">&#39;model_state&#39;</span><span class="p">]</span>
+    <span class="n">discriminator</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">model_state</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Previous results loaded.&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">mi_list</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># storing the mi estimation of each iteration</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Previous results loaded.
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="training">
 <h2>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h2>
 <p>We want to obtain <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}(1|x,y)\)</span> by a neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>.</p>
-<p>To train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>, instead of minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>, we propose minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to the distribution</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ddbb066e-499e-4695-8437-77308ac2ba76">
-<span class="eqno">(5)<a class="headerlink" href="#equation-ddbb066e-499e-4695-8437-77308ac2ba76" title="Permalink to this equation">¶</a></span>\[\begin{align}
-p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}} := (1-\alpha) \cdot p_{{C} | {\tilde{X}}{\tilde{Y}}} + \alpha \cdot p_{U},
-\end{align}\]</div>
-<p>where <span class="math notranslate nohighlight">\(p_{U} := \frac{1}{2}\)</span> is the uniform over the labels <span class="math notranslate nohighlight">\(\{0, 1\}\)</span> (in fact <span class="math notranslate nohighlight">\(p_{U}\)</span> can be any distribution over labels), and <span class="math notranslate nohighlight">\(\alpha\)</span> is the smoothing weight.</p>
-<p>Here, we use adaptive smoothing weight <span class="math notranslate nohighlight">\(\alpha\)</span> which will be given by function <code class="docutils literal notranslate"><span class="pre">acti_func</span></code> called in the forward pass of the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>. The adaptive smoothing weight <span class="math notranslate nohighlight">\(\alpha\)</span> depends on the input sample and the neural network, and is defined as follows:</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{equation*}
-\alpha = \left\{
-	 \begin{array}{ll}
-	 -\frac{\alpha_{0}}{\tau}\hat{p}_{\theta}(1|\tilde{X},\tilde{Y})+\alpha_{0}, &amp;
-	 \hat{p}_{\theta}(1|\tilde{X},\tilde{Y})\in[0,\tau], \\
-	 0, &amp; \hat{p}_{\theta}(1|\tilde{X},\tilde{Y})\in(\tau,1-\tau), \\
-	 \frac{\alpha_{0}}{\tau}\hat{p}_{\theta}(1|\tilde{X},\tilde{Y})+\frac{\tau-1}{\tau}\alpha_{0}, &amp; \hat{p}_{\theta}(1|\tilde{X},\tilde{Y})\in[1-\tau,1],
-	 \end{array}
+<p>To train the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>, instead of minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>, we propose minimizing the cross-entropy of <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span> relative to the distribution
+\begin{align}
+p^{‘}<em>{{C} | {\tilde{X}}{\tilde{Y}}} := (1-\alpha) \cdot p</em>{{C} | {\tilde{X}}{\tilde{Y}}} + \alpha \cdot p_{U},
+\end{align}
+where <span class="math notranslate nohighlight">\(p_{U} := \frac{1}{2}\)</span> is the uniform over the labels <span class="math notranslate nohighlight">\(\{0, 1\}\)</span> (in fact <span class="math notranslate nohighlight">\(p_{U}\)</span> can be any distribution over labels), and <span class="math notranslate nohighlight">\(\alpha\)</span> is the smoothing weight.</p>
+<p>Here, we use adaptive smoothing weight <span class="math notranslate nohighlight">\(\alpha\)</span> which will be given by function <code class="docutils literal notranslate"><span class="pre">acti_func</span></code> called in the forward pass of the neural network <span class="math notranslate nohighlight">\(\hat{p}_{\theta}\)</span>. The adaptive smoothing weight <span class="math notranslate nohighlight">\(\alpha\)</span> depends on the input sample and the neural network, and is defined as follows:
+\begin{equation*}
+\alpha = \left{
+\begin{array}{ll}
+-\frac{\alpha_{0}}{\tau}\hat{p}<em>{\theta}(1|\tilde{X},\tilde{Y})+\alpha</em>{0}, &amp;
+\hat{p}<em>{\theta}(1|\tilde{X},\tilde{Y})\in[0,\tau], \
+0, &amp; \hat{p}</em>{\theta}(1|\tilde{X},\tilde{Y})\in(\tau,1-\tau), \
+\frac{\alpha_{0}}{\tau}\hat{p}<em>{\theta}(1|\tilde{X},\tilde{Y})+\frac{\tau-1}{\tau}\alpha</em>{0}, &amp; \hat{p}_{\theta}(1|\tilde{X},\tilde{Y})\in[1-\tau,1],
+\end{array}
 \right.
-\end{equation*}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\alpha_{0} \in [0, 1]\)</span> is the maximum regularization weight and <span class="math notranslate nohighlight">\(\tau \in (0, \frac{1}{2})\)</span> is the threshold to judge whether the classifier is starting to get overconfident.</p>
+\end{equation*}
+where <span class="math notranslate nohighlight">\(\alpha_{0} \in [0, 1]\)</span> is the maximum regularization weight and <span class="math notranslate nohighlight">\(\tau \in (0, \frac{1}{2})\)</span> is the threshold to judge whether the classifier is starting to get overconfident.</p>
 <p>We train the neural network with adative smoothing weight and <span class="math notranslate nohighlight">\(p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>, while when we evaluate the MI estimate by the trained neural network, we use the function <code class="docutils literal notranslate"><span class="pre">mi_estimate</span></code> which is based on MI estimation by Probabilistic Classifier Method (PCM) method and uses <span class="math notranslate nohighlight">\(p_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span> instead of <span class="math notranslate nohighlight">\(p^{'}_{{C} | {\tilde{X}}{\tilde{Y}}}\)</span>.</p>
 <p>The following cell train the neural network using the data samples.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">XY</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Ground_truth</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">)</span>
-<span class="n">test_XY</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="n">distribution</span><span class="o">=</span><span class="n">density</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rho</span><span class="p">)</span>
-
-<span class="n">mi_list</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># storing the infoNCE of each iteration</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">n_iters</span><span class="p">):</span>
-    <span class="n">data_joint</span> <span class="o">=</span> <span class="n">_resample</span><span class="p">(</span><span class="n">XY</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
-    <span class="n">X_ref</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
-    <span class="n">Y_ref</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
-    <span class="n">data_margin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">X_ref</span><span class="p">,</span> <span class="n">Y_ref</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">valid</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">Tensor</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">fake</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">Tensor</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">train_data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">data_joint</span><span class="p">,</span> <span class="n">data_margin</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">valid</span><span class="p">,</span> <span class="n">fake</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">pred_label</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="c1"># alpha is the adaptive label smoothing weight</span>
-    <span class="c1"># print(alpha)</span>
-    <span class="n">c_0_1_ratio</span> <span class="o">=</span> <span class="n">data_margin</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">data_joint</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># c_0_1_ratio = p_{C}(0) / p_{C}(1) </span>
-    
-    <span class="n">optimizer_D</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="n">smooth_ce_loss</span><span class="p">(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">alpha</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># cross-entropy of $\hat{p}_{\theta}$ relative to the distribution p^{&#39;}_{C}</span>
-    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-    <span class="n">optimizer_D</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    
-    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-        <span class="n">mi_est</span> <span class="o">=</span> <span class="n">mi_estimate</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">XY</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="n">c_0_1_ratio</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">mi_est</span><span class="p">):</span>
-            <span class="n">mi_est</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mi_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="n">mi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi_est</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0:
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iternation: </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2">, mi_est: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">mi_est</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iternation: 0, loss: 0.693223, mi_est: -0.000101
-Iternation: 500, loss: 0.691924, mi_est: 0.001614
-Iternation: 1000, loss: 0.665609, mi_est: 0.068321
-Iternation: 1500, loss: 0.414793, mi_est: 0.775586
-Iternation: 2000, loss: 0.253970, mi_est: 1.697711
-Iternation: 2500, loss: 0.174388, mi_est: 2.101006
-Iternation: 3000, loss: 0.166164, mi_est: 2.605197
-Iternation: 3500, loss: 0.155982, mi_est: 2.841541
-Iternation: 4000, loss: 0.174443, mi_est: 2.929928
-Iternation: 4500, loss: 0.095256, mi_est: 3.407237
-Iternation: 5000, loss: 0.087209, mi_est: 3.671258
-Iternation: 5500, loss: 0.064488, mi_est: 3.919998
-Iternation: 6000, loss: 0.095738, mi_est: 4.148105
-Iternation: 6500, loss: 0.062589, mi_est: 4.257941
-Iternation: 7000, loss: 0.076234, mi_est: 4.340260
-Iternation: 7500, loss: 0.082842, mi_est: 4.452869
-Iternation: 8000, loss: 0.114905, mi_est: 4.292974
-Iternation: 8500, loss: 0.108709, mi_est: 4.291416
-Iternation: 9000, loss: 0.101272, mi_est: 4.480629
-Iternation: 9500, loss: 0.088064, mi_est: 4.720654
-Iternation: 10000, loss: 0.074219, mi_est: 4.480909
-Iternation: 10500, loss: 0.116837, mi_est: 4.740764
-Iternation: 11000, loss: 0.099818, mi_est: 4.413824
-Iternation: 11500, loss: 0.072638, mi_est: 4.914423
-Iternation: 12000, loss: 0.070394, mi_est: 4.875184
-Iternation: 12500, loss: 0.111291, mi_est: 4.840117
-Iternation: 13000, loss: 0.107812, mi_est: 4.794990
-Iternation: 13500, loss: 0.092610, mi_est: 4.899735
-Iternation: 14000, loss: 0.123937, mi_est: 4.662586
-Iternation: 14500, loss: 0.062783, mi_est: 5.025394
-Iternation: 15000, loss: 0.113903, mi_est: 4.784110
-Iternation: 15500, loss: 0.094929, mi_est: 4.877805
-Iternation: 16000, loss: 0.091708, mi_est: 4.937254
-Iternation: 16500, loss: 0.073214, mi_est: 5.047528
-Iternation: 17000, loss: 0.094328, mi_est: 4.929675
-Iternation: 17500, loss: 0.056482, mi_est: 5.117757
-Iternation: 18000, loss: 0.072562, mi_est: 4.715728
-Iternation: 18500, loss: 0.097281, mi_est: 4.881880
-Iternation: 19000, loss: 0.118498, mi_est: 4.940796
-Iternation: 19500, loss: 0.061730, mi_est: 5.049310
-Iternation: 20000, loss: 0.065751, mi_est: 4.798854
-Iternation: 20500, loss: 0.041664, mi_est: 4.804278
-Iternation: 21000, loss: 0.055456, mi_est: 5.003839
-Iternation: 21500, loss: 0.050942, mi_est: 4.980196
-Iternation: 22000, loss: 0.079064, mi_est: 4.589282
-Iternation: 22500, loss: 0.156443, mi_est: 5.073649
-Iternation: 23000, loss: 0.097265, mi_est: 4.977273
-Iternation: 23500, loss: 0.093301, mi_est: 4.924125
-Iternation: 24000, loss: 0.075188, mi_est: 4.777357
-Iternation: 24500, loss: 0.078395, mi_est: 4.733030
-Iternation: 25000, loss: 0.100057, mi_est: 5.029529
-Iternation: 25500, loss: 0.062130, mi_est: 4.922980
-Iternation: 26000, loss: 0.106021, mi_est: 4.794126
-Iternation: 26500, loss: 0.064098, mi_est: 4.745516
-Iternation: 27000, loss: 0.074674, mi_est: 5.038038
-Iternation: 27500, loss: 0.092295, mi_est: 5.069235
-Iternation: 28000, loss: 0.066452, mi_est: 4.771264
-Iternation: 28500, loss: 0.080011, mi_est: 5.014525
-Iternation: 29000, loss: 0.129011, mi_est: 4.827820
-Iternation: 29500, loss: 0.081553, mi_est: 4.903249
-Iternation: 30000, loss: 0.098246, mi_est: 4.868933
-Iternation: 30500, loss: 0.082627, mi_est: 4.988998
-Iternation: 31000, loss: 0.083208, mi_est: 4.994774
-Iternation: 31500, loss: 0.117691, mi_est: 4.862545
-Iternation: 32000, loss: 0.133922, mi_est: 4.734841
-Iternation: 32500, loss: 0.145445, mi_est: 4.788671
-Iternation: 33000, loss: 0.045230, mi_est: 5.021152
-Iternation: 33500, loss: 0.080621, mi_est: 4.929432
-Iternation: 34000, loss: 0.102598, mi_est: 4.619001
-Iternation: 34500, loss: 0.080900, mi_est: 4.796981
-Iternation: 35000, loss: 0.069962, mi_est: 5.101327
-Iternation: 35500, loss: 0.092603, mi_est: 4.868690
-Iternation: 36000, loss: 0.091172, mi_est: 4.911704
-Iternation: 36500, loss: 0.077532, mi_est: 4.935873
-Iternation: 37000, loss: 0.082197, mi_est: 4.934094
-Iternation: 37500, loss: 0.115408, mi_est: 4.360623
-Iternation: 38000, loss: 0.064417, mi_est: 4.986865
-Iternation: 38500, loss: 0.061719, mi_est: 5.010761
-Iternation: 39000, loss: 0.055653, mi_est: 4.839283
-Iternation: 39500, loss: 0.074393, mi_est: 4.952278
-Iternation: 40000, loss: 0.112275, mi_est: 4.686230
-Iternation: 40500, loss: 0.096298, mi_est: 4.867712
-Iternation: 41000, loss: 0.059133, mi_est: 4.844005
-Iternation: 41500, loss: 0.090497, mi_est: 5.119436
-Iternation: 42000, loss: 0.090280, mi_est: 4.781676
-Iternation: 42500, loss: 0.078037, mi_est: 4.631750
-Iternation: 43000, loss: 0.071995, mi_est: 4.875722
-Iternation: 43500, loss: 0.085157, mi_est: 4.686130
-Iternation: 44000, loss: 0.108532, mi_est: 4.636340
-Iternation: 44500, loss: 0.094740, mi_est: 4.890665
-Iternation: 45000, loss: 0.078121, mi_est: 5.138164
-Iternation: 45500, loss: 0.075284, mi_est: 4.743979
-Iternation: 46000, loss: 0.115209, mi_est: 4.525914
-Iternation: 46500, loss: 0.083969, mi_est: 4.745441
-Iternation: 47000, loss: 0.135979, mi_est: 4.620874
-Iternation: 47500, loss: 0.140948, mi_est: 4.350669
-Iternation: 48000, loss: 0.051632, mi_est: 4.958722
-Iternation: 48500, loss: 0.053381, mi_est: 4.789315
-Iternation: 49000, loss: 0.073913, mi_est: 4.538983
-Iternation: 49500, loss: 0.123886, mi_est: 4.769751
-Iternation: 50000, loss: 0.062334, mi_est: 5.001263
-Iternation: 50500, loss: 0.068045, mi_est: 4.852282
-Iternation: 51000, loss: 0.094685, mi_est: 4.931803
-Iternation: 51500, loss: 0.062033, mi_est: 4.896703
-Iternation: 52000, loss: 0.053338, mi_est: 4.925163
-Iternation: 52500, loss: 0.104054, mi_est: 4.563111
-Iternation: 53000, loss: 0.109301, mi_est: 4.726335
-Iternation: 53500, loss: 0.083491, mi_est: 4.571031
-Iternation: 54000, loss: 0.082933, mi_est: 5.000661
-Iternation: 54500, loss: 0.119178, mi_est: 4.684453
-Iternation: 55000, loss: 0.046914, mi_est: 5.007573
-Iternation: 55500, loss: 0.094039, mi_est: 4.625651
-Iternation: 56000, loss: 0.113288, mi_est: 4.771509
-Iternation: 56500, loss: 0.087834, mi_est: 4.582964
-Iternation: 57000, loss: 0.049060, mi_est: 4.930907
-Iternation: 57500, loss: 0.107149, mi_est: 4.658303
-Iternation: 58000, loss: 0.062443, mi_est: 4.636427
-Iternation: 58500, loss: 0.060932, mi_est: 4.799589
-Iternation: 59000, loss: 0.063252, mi_est: 4.903440
-Iternation: 59500, loss: 0.097978, mi_est: 4.833655
+<span class="n">continue_train</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># set to True to continue to train</span>
+<span class="k">if</span> <span class="n">continue_train</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">n_iters</span><span class="p">):</span>
+        <span class="n">data_joint</span> <span class="o">=</span> <span class="n">_resample</span><span class="p">(</span><span class="n">XY</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">X_ref</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">Y_ref</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">data_margin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">X_ref</span><span class="p">,</span> <span class="n">Y_ref</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">fake</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">data_joint</span><span class="p">,</span> <span class="n">data_margin</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">valid</span><span class="p">,</span> <span class="n">fake</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">pred_label</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="c1"># alpha is the adaptive label smoothing weight</span>
+        <span class="c1"># print(alpha)</span>
+        <span class="n">c_0_1_ratio</span> <span class="o">=</span> <span class="n">data_margin</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">data_joint</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># c_0_1_ratio = p_{C}(0) / p_{C}(1) </span>
+        
+        <span class="n">optimizer_D</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">smooth_ce_loss</span><span class="p">(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">alpha</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># cross-entropy of $\hat{p}_{\theta}$ relative to the distribution p^{&#39;}_{C}</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer_D</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">mi_est</span> <span class="o">=</span> <span class="n">mi_estimate</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">XY</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="n">c_0_1_ratio</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">mi_est</span><span class="p">):</span>
+                <span class="n">mi_est</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mi_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">mi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi_est</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0:
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iternation: </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2">, mi_est: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">mi_est</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -735,15 +632,28 @@ Iternation: 59500, loss: 0.097978, mi_est: 4.833655
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fa5580c6d90&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f5fec067f90&gt;
 </pre></div>
 </div>
-<img alt="_images/AdapLS_37_1.svg" src="_images/AdapLS_37_1.svg" /></div>
+<img alt="_images/AdapLS_39_1.svg" src="_images/AdapLS_39_1.svg" /></div>
 </div>
 <p>Save the model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="s1">&#39;./results/AdapLS_PCM.pth&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">overwrite</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># set to True to overwrite previously stored results</span>
+<span class="k">if</span> <span class="n">overwrite</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">chkpt_name</span><span class="p">):</span>
+    <span class="n">model_state</span> <span class="o">=</span> <span class="n">discriminator</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span>
+        <span class="s1">&#39;mi_list&#39;</span><span class="p">:</span> <span class="n">mi_list</span><span class="p">,</span>
+        <span class="s1">&#39;mi_copy&#39;</span><span class="p">:</span> <span class="n">mi_copy</span><span class="p">,</span>
+        <span class="s1">&#39;model_state&#39;</span><span class="p">:</span> <span class="n">model_state</span>
+    <span class="p">},</span> <span class="n">chkpt_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Current results saved.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Current results saved.
 </pre></div>
 </div>
 </div>
@@ -800,7 +710,7 @@ Iternation: 59500, loss: 0.097978, mi_est: 4.833655
     </div>
 
     
-  <script src="_static/js/index.3da636dd464baa7582d2.js"></script>
+  <script src="_static/js/index.d3f166471bb80abb5163.js"></script>
 
 
     

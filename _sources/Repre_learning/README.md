@@ -1,6 +1,7 @@
 # Representation learning Experiments
 
-The code is adapted from [here](https://github.com/google-research/google-research/blob/master/mutual_information_representation_learning/mirl.ipynb) and [here](https://github.com/yaohungt/Pointwise_Dependency_Neural_Estimation/tree/master/RepreLearn_Shallow).
+## Acknowledgments
+The code is adapted from [Google Research](https://github.com/google-research/google-research/blob/master/mutual_information_representation_learning/mirl.ipynb) and [Tsai and Zhao](https://github.com/yaohungt/Pointwise_Dependency_Neural_Estimation/tree/master/RepreLearn_Shallow).
 
 
 ## Demo to run the code
