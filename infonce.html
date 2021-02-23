@@ -298,6 +298,8 @@ commentsRunWhenDOMLoaded(addUtterances);
 <span class="kn">from</span> <span class="nn">data.mix_gaussian</span> <span class="kn">import</span> <span class="n">MixedGaussian</span>
 <span class="kn">from</span> <span class="nn">data.gaussian</span> <span class="kn">import</span> <span class="n">Gaussian</span>
 <span class="kn">from</span> <span class="nn">model.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>   
+<span class="kn">import</span> <span class="nn">datetime</span>
 </pre></div>
 </div>
 </div>
@@ -312,6 +314,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
 <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;./results/InfoNCE&#39;</span>   <span class="c1"># filename</span>
 <span class="n">chkpt_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">+</span><span class="s1">&#39;.pt&#39;</span>      <span class="c1"># checkpoint</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="s1">&#39;./results/log/InfoNCE&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -545,8 +548,12 @@ f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">mi_est</span> <span class="o">=</span> <span class="n">infonce_loss</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
         <span class="n">mi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi_est</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">&#39;mi_list&#39;</span><span class="p">,</span> <span class="n">mi_est</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0:
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iternation: </span><span class="si">%d</span><span class="s2">, loss: </span><span class="si">%f</span><span class="s2">, mi_est: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">mi_est</span><span class="p">))</span>
+
+<span class="n">writer</span><span class="o">.</span><span class="n">add_graph</span><span class="p">(</span><span class="n">discriminator</span><span class="p">,</span> <span class="p">(</span><span class="n">XY</span><span class="p">,))</span>
 </pre></div>
 </div>
 </div>
@@ -581,7 +588,7 @@ f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f47f8546110&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f5f20e4e0d0&gt;
 </pre></div>
 </div>
 <img alt="_images/infonce_33_1.svg" src="_images/infonce_33_1.svg" /></div>
@@ -597,6 +604,7 @@ f(x,y)=\log \frac{p_{Y|X}(y|x)}{p_{Y}(y)} + c \quad \forall x\in \mathcal{X}, y 
         <span class="s1">&#39;mi_copy&#39;</span><span class="p">:</span> <span class="n">mi_copy</span><span class="p">,</span>
         <span class="s1">&#39;model_state&#39;</span><span class="p">:</span> <span class="n">model_state</span>
     <span class="p">},</span> <span class="n">chkpt_name</span><span class="p">)</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Current results saved.&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
