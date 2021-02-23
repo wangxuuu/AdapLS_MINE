@@ -10,7 +10,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#@title Imports, configurations, and helper functions { display-mode: "form" }
+# reference links:
+# From https://colab.research.google.com/github/google-research/google-research/blob/master/vbmi/vbmi_demo.ipynb
+# https://github.com/google-research/google-research/blob/master/mutual_information_representation_learning/mirl.ipynb
+# https://github.com/yaohungt/Pointwise_Dependency_Neural_Estimation/tree/master/RepreLearn_Shallow
 from __future__ import division
 from __future__ import print_function
 
@@ -20,9 +23,7 @@ import functools
 import itertools
 import os
 import pickle
-
 import argparse
-
 from matplotlib import pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import numpy as np
@@ -39,13 +40,13 @@ parser = argparse.ArgumentParser(description='Representation Learning Experiment
 parser.add_argument('--dataset', default='mnist', type=str, 
                    help='cifar10 or mnist')
 parser.add_argument('--lr', default=1e-4, type=float, 
-                   help='1e-4 or 1e-5')
+                   help='learning rate')
 parser.add_argument('--batch_size', default=100, type=int, 
-                   help='training batch size')
+                   help='mini batch size')
 parser.add_argument('--smoothing', default=0.01, type=float,
-                    help='label smoothing')
-parser.add_argument('--output_dir', type=str, default='./runs/Shallow',
-                    help='directory where tensorboard events and checkpoints will be stored')
+                    help='label smoothing parameter')
+parser.add_argument('--output_dir', type=str, default='./runs',
+                    help='directory where the results will be stored')
 
 args = parser.parse_args()
 a, b, c = 0.005, 0.1, 0.9
@@ -67,10 +68,9 @@ TRAIN_BATCH_SIZE = args.batch_size #64 #@param { type: "slider", min: 64, max: 1
 
 # save results
 # RESULT_DIR = '{}_nrun={}_lr={}_batch={}.pkl'.format(TFDS_NAME, NRUNS, LEARNING_RATE, TRAIN_BATCH_SIZE)
-RESULT_DIR = './runs/Shallow/{}_nrun={}_lr={}_batch={}.pkl'.format(TFDS_NAME, NRUNS, LEARNING_RATE, TRAIN_BATCH_SIZE)
+RESULT_DIR = './runs/{}_nrun={}_lr={}_batch={}.pkl'.format(TFDS_NAME, NRUNS, LEARNING_RATE, TRAIN_BATCH_SIZE)
 
-# Do not change these
-RUN_EXPERIMENTS = True #@param { type: "boolean"}
+RUN_EXPERIMENTS = True
 FEATURE_INPUT = "image"
 FEATURE_LABEL = "label"
 
@@ -154,14 +154,6 @@ def apply_default_style(ax):
   handles, labels = ax.get_legend_handles_labels()
   plt.legend(loc="lower right", handles=handles[1:], labels=labels[1:])
 
-FONTSIZE = 15 
-sns.set_style("whitegrid")
-plt.rcParams.update({'axes.labelsize': FONTSIZE,
-                     'xtick.labelsize': FONTSIZE,
-                     'ytick.labelsize': FONTSIZE,
-                     'legend.fontsize': FONTSIZE})
-
-
 def get_testing_loss(x_array, session, loss, data_ph, dims, batch_size=512):
   total_loss = 0
   for i in range(0, x_array.shape[0], batch_size):
@@ -183,10 +175,6 @@ def map_data(x_array, session, codes, data_ph, dims, batch_size=512):
         session.run(codes,
                     feed_dict={data_ph: x_array[i:i+batch_size, :dims]}))
   return np.concatenate(x_mapped, axis=0)
-
-
-# @title Import bounds implemented by Poole et al. (2019) { display-mode: "form" }
-# From https://colab.research.google.com/github/google-research/google-research/blob/master/vbmi/vbmi_demo.ipynb 
 
 def reduce_logmeanexp_nodiag(x, axis=None):
   batch_size = x.shape[0]
@@ -226,9 +214,6 @@ def js_fgan_lower_bound(f):
 def infonce_lower_bound(scores):
   """InfoNCE lower bound from van den Oord et al. (2018)."""
   nll = tf.reduce_mean(input_tensor=tf.linalg.diag_part(scores) - tf.reduce_logsumexp(input_tensor=scores, axis=1))
-  # Alternative implementation:
-  # nll = -tf.nn.sparse_softmax_cross_entropy_with_logits(logits=scores, labels=tf.range(batch_size))
-  # tf.print(nll) # mostly around -0.4~-0.6
   mi = tf.math.log(tf.cast(scores.shape[0], tf.float32)) + nll
   return mi
 
@@ -238,7 +223,7 @@ def our_lower_bound(scores):
   """Our lower bound"""
   batch_size = tf.cast(scores.shape[0], tf.float32)
   joint_term = tf.reduce_mean(input_tensor=tf.linalg.diag_part(scores))
-  
+
   # expectation
   scores_sq = scores**2
   marg_num = batch_size * (batch_size - 1.)
@@ -592,7 +577,7 @@ class BilinearCritic(tf.keras.Model):
 
   def call(self, x, y):
     return tf.matmul(x, self._W(y), transpose_b=True)
-# Copied from
+
 # https://colab.research.google.com/github/google-research/google-research/blob/master/vbmi/vbmi_demo.ipynb
 class ConcatCritic(tf.keras.Model):
   def __init__(self, hidden_dim=200, layers=1, activation='relu', **kwargs):
@@ -609,7 +594,7 @@ class ConcatCritic(tf.keras.Model):
     xy_pairs = tf.reshape(tf.concat((x_tiled, y_tiled), axis=2),
                           [batch_size * batch_size, -1])
     # Compute scores for each x_i, y_j pair.
-    scores = self._f(xy_pairs) 
+    scores = self._f(xy_pairs)
     return tf.transpose(a=tf.reshape(scores, [batch_size, batch_size]))
 
 
@@ -748,9 +733,9 @@ def run_sweep(nets, critics, loss_fns, exp_name, **kwargs):
         results_with_singular_values.append((
             ResultsConfig(nets_name, critic_name, loss_name), results_per_run
         ))
-  
+
   return {
-      "df": pd.concat(data_frames), 
+      "df": pd.concat(data_frames),
       "singular_values": results_with_singular_values
   }
 
