@@ -501,7 +501,7 @@ is implemented by a neural network and may be clipped to a certain range before 
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">smooth_ce_loss</span><span class="p">(</span><span class="n">pre_label</span><span class="p">,</span> <span class="n">true_label</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">):</span>
     <span class="n">new_labels</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">smoothing</span><span class="p">)</span> <span class="o">*</span> <span class="n">true_label</span> <span class="o">+</span> <span class="n">smoothing</span> <span class="o">/</span> <span class="n">num_classes</span>
-    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()(</span><span class="n">pred_label</span><span class="p">,</span> <span class="n">new_labels</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()(</span><span class="n">pre_label</span><span class="p">,</span> <span class="n">new_labels</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
