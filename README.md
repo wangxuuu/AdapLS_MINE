@@ -15,3 +15,14 @@ The repository contains the implementation of the proposed adaptive label smooth
 - PCM.ipynb: The probabilisitic classifier method.
 - InfoNCE.ipynb: The noise contrastive method.
 
+## Citation
+
+If you find our work or code is helpful, please consider citing our paper:
+> @inproceedings{wang2021adaptive,
+  title={Adaptive Label Smoothing for Classifier-based Mutual Information Neural Estimation},
+  author={Wang, Xu and Al-Bashabsheh, Ali and Zhao, Chao and Chan, Chung},
+  booktitle={2021 IEEE International Symposium on Information Theory (ISIT)},
+  pages={1035--1040},
+  year={2021},
+  organization={IEEE}
+}
